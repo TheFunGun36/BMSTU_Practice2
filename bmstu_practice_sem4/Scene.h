@@ -9,12 +9,11 @@
 class Scene {
     using ObjectsMap = std::unordered_map<ObjectId, std::shared_ptr<SceneObject>>;
     PROPERTY_RW(ObjectsMap, objects);
-    PROPERTY_RW(Camera3D, camera);
-    PROPERTY_RW(std::shared_ptr<RubicsCube>, cube);
-    PROPERTY_RO(std::shared_ptr<Renderer>, renderer);
+    PROPERTY_RW(std::shared_ptr<Camera3D>, camera);
+    PROPERTY_RO(std::shared_ptr<RubicsCube>, cube);
 
 public:
-    Scene() = default;
+    Scene();
     Scene(const Scene&) = delete;
     Scene(Scene&&) = delete;
 

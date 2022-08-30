@@ -28,9 +28,4 @@ public:
 protected:
     virtual std::ostream& add_to_stream(std::ostream& stream) const;
     virtual std::wostream& add_to_stream(std::wostream& stream) const;
-
-private:
-    Vector3D _position;
-    EulerAngles _rotation;
-    Vector3D _scale;
 };

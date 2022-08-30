@@ -3,15 +3,24 @@
 #include <qimage.h>
 
 Viewport::Viewport(QWidget* parent)
-    : QWidget(parent) {
-
+    : QWidget(parent)
+    , _pixmap(width(), height())
+    , _should_render(false)
+    , _auto_render(false) {
 }
 
 void Viewport::paintEvent(QPaintEvent* e) {
     Q_UNUSED(e);
     QPainter qp(this);
-    QPixmap pixmap(width(), height());
-    QImage image = pixmap.toImage();
-    _renderer->render(image);
-    qp.drawPixmap(0, 0, QPixmap::fromImage(image));
+
+    if (_should_render) {
+        QImage image = QPixmap(width(), height()).toImage();
+        _renderer->render(image);
+        _pixmap = QPixmap::fromImage(image);
+    }
+    qp.drawPixmap(0, 0, _pixmap);
+}
+
+void Viewport::render_update(bool manual) {
+    _should_render = _auto_render || manual;
 }

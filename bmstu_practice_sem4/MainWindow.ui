@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>642</width>
     <height>400</height>
    </rect>
   </property>
@@ -154,7 +154,7 @@
       <item>
        <widget class="QLineEdit" name="lineHistory">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -163,7 +163,37 @@
          <bool>true</bool>
         </property>
         <property name="placeholderText">
-         <string/>
+         <string>Список поворотов</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>12</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBox">
+        <property name="text">
+         <string>Автоматическая отрисовка</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Отрисовать</string>
         </property>
        </widget>
       </item>
@@ -215,7 +245,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>642</width>
      <height>22</height>
     </rect>
    </property>
@@ -223,10 +253,24 @@
     <property name="title">
      <string>Куб</string>
     </property>
-    <addaction name="actionCancel"/>
-    <addaction name="actionClear"/>
+    <addaction name="actionCubeCancel"/>
+    <addaction name="actionCubeReset"/>
+   </widget>
+   <widget class="QMenu" name="menuScene">
+    <property name="title">
+     <string>Сцена</string>
+    </property>
+    <addaction name="actionSceneLoad"/>
+   </widget>
+   <widget class="QMenu" name="menuCamera">
+    <property name="title">
+     <string>Камера</string>
+    </property>
+    <addaction name="actionCameraReset"/>
    </widget>
    <addaction name="menuCube"/>
+   <addaction name="menuScene"/>
+   <addaction name="menuCamera"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -237,12 +281,22 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionCancel">
+  <action name="actionCubeCancel">
    <property name="text">
     <string>Отменить поворот</string>
    </property>
   </action>
-  <action name="actionClear">
+  <action name="actionCubeReset">
+   <property name="text">
+    <string>В исходное состояние</string>
+   </property>
+  </action>
+  <action name="actionSceneLoad">
+   <property name="text">
+    <string>Загрузить...</string>
+   </property>
+  </action>
+  <action name="actionCameraReset">
    <property name="text">
     <string>В исходное состояние</string>
    </property>

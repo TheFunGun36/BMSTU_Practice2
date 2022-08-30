@@ -2,7 +2,7 @@
 
 Surface::Surface()
     : diffuse(1.0)
-    , points({nullptr, nullptr, nullptr}) {
+    , points({}) {
 }
 
 Surface::Surface(const Vertex* v1, const Vertex* v2, const Vertex* v3)

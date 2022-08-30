@@ -1,12 +1,14 @@
 #include "Scene.h"
 
-bool Scene::load(const QString& filename) {
-    // TODO: load Scene
-    return false;
+Scene::Scene()
+    : _camera(std::make_shared<Camera3D>())
+    , _cube(std::make_shared<RubicsCube>()) {
 }
 
-const std::shared_ptr<Renderer>& Scene::renderer() noexcept {
-    return _renderer;
+bool Scene::load(const QString& filename) {
+    // TODO: load Scene
+    // File must contain info about all other scene objects.
+    return false;
 }
 
 bool Scene::loadObject(const QString& filename) {

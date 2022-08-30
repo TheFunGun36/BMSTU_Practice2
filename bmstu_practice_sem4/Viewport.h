@@ -8,9 +8,16 @@ class Viewport : public QWidget {
 
 public:
     PROPERTY_RW(std::shared_ptr<Renderer>, renderer);
+    PROPERTY_RW(bool, auto_render);
 
 public:
     Viewport(QWidget* parent = nullptr);
     void paintEvent(QPaintEvent* e) override;
+
+    void render_update(bool manual = false);
+
+private:
+    bool _should_render;
+    QPixmap _pixmap;
 };
 

@@ -60,37 +60,6 @@ void Transform::scale(const Vector3D& value) {
     _position.z() *= value.z();
 }
 
-
-const Vector3D& Transform::position() const {
-    return _position;
-}
-Vector3D& Transform::position() {
-    return _position;
-}
-void Transform::setPosition(const Vector3D& value) {
-    _position = value;
-}
-
-const EulerAngles& Transform::rotation() const {
-    return _rotation;
-}
-EulerAngles& Transform::rotation() {
-    return _rotation;
-}
-void Transform::setPosition(const EulerAngles& value) {
-    _rotation = value;
-}
-
-const Vector3D& Transform::scale() const {
-    return _scale;
-}
-Vector3D& Transform::scale() {
-    return _scale;
-}
-void Transform::setScale(const Vector3D& value) {
-    _scale = value;
-}
-
 std::ostream& Transform::add_to_stream(std::ostream& stream) const {
     return stream << "Transform(P:" << _position << ", R:" << _rotation << ", S:" << _scale << ")";
 }

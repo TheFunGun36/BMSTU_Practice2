@@ -1,6 +1,7 @@
 #pragma once
 #include "Vertex.h"
 #include "Color.h"
+#include <array>
 
 struct Surface {
 public:

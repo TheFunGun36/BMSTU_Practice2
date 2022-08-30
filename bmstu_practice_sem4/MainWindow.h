@@ -13,4 +13,5 @@ public:
 private:
     Ui::MainWindowClass _ui;
     std::shared_ptr<Scene> _scene;
+    std::shared_ptr<Renderer> _renderer;
 };

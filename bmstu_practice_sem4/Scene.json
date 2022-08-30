@@ -1,0 +1,20 @@
+{
+	"Objects": [
+		{
+			"type": "model",
+			"file": "vase.obj",
+			"posx": 500,
+			"posy": 500
+		},
+		{
+			"type": "model",
+			"file": "sphere.obj",
+			"posx": -500,
+			"posy": -500
+		},
+		{
+			"type": "light",
+			"posz": 500
+		}
+	]
+}
