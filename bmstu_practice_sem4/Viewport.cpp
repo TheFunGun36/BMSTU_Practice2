@@ -15,12 +15,19 @@ void Viewport::paintEvent(QPaintEvent* e) {
 
     if (_should_render) {
         QImage image = QPixmap(width(), height()).toImage();
-        _renderer->render(image);
-        _pixmap = QPixmap::fromImage(image);
+        if (!_renderer->render(image)) {
+            _should_render = false;
+            emit render_failed();
+            return;
+        }
+        else {
+            _pixmap = QPixmap::fromImage(image);
+            _should_render = _auto_render;
+        }
     }
     qp.drawPixmap(0, 0, _pixmap);
 }
 
-void Viewport::render_update(bool manual) {
-    _should_render = _auto_render || manual;
+void Viewport::render_update(bool force) {
+    _should_render = _auto_render || force;
 }

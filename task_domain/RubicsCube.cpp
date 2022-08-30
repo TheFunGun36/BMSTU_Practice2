@@ -3,10 +3,11 @@
 #include <cassert>
 
 RubicsCube::RubicsCube() {
+    this->surface().reserve(324);
     for (int iz = 0; iz < 3; iz++)
         for (int iy = 0; iy < 3; iy++)
             for (int ix = 0; ix < 3; ix++)
-                addCube(ix, iy, iz);
+                add_cube(ix, iy, iz);
 }
 
 static inline int arithmeticProg(int value) {
@@ -16,7 +17,7 @@ static inline int arithmeticProg(int value) {
     return result;
 }
 
-void RubicsCube::addCube(int ix, int iy, int iz) {
+void RubicsCube::add_cube(int ix, int iy, int iz) {
     constexpr real sqrt3over3 = 0.5773502691896257;
     const real cubeSize = 10;
     int index = ix + iy * 3 + iz * 9;
@@ -30,9 +31,9 @@ void RubicsCube::addCube(int ix, int iy, int iz) {
             for (int bx = 0; bx <= 1; bx++) {
                 Vertex vertex;
                 vertex.pos = {
-                    (arithmeticProg(ix) + 2) * cubeSize,
-                    (arithmeticProg(iy) + 2) * cubeSize,
-                    (arithmeticProg(iz) + 2) * cubeSize
+                    (arithmeticProg(ix + bx) - 2) * cubeSize,
+                    (arithmeticProg(iy + by) - 2) * cubeSize,
+                    (arithmeticProg(iz + bz) - 2) * cubeSize
                 };
                 vertex.normal = {
                     sqrt3over3 * bx * 2 - sqrt3over3,
@@ -53,9 +54,11 @@ void RubicsCube::addCube(int ix, int iy, int iz) {
     surface.points[0] = &_cube[index]->vertex()[x1]; \
     surface.points[1] = &_cube[index]->vertex()[x2]; \
     surface.points[2] = &_cube[index]->vertex()[x3]; \
-    _cube[index]->surface().push_back(surface); \
+    _cube[index]->add_surface(surface); \
+    this->surface().push_back(_cube[index]->surface().back()); \
     surface.points[0] = &_cube[index]->vertex()[x4]; \
-    _cube[index]->surface().push_back(surface); \
+    _cube[index]->add_surface(surface); \
+    this->surface().push_back(_cube[index]->surface().back());
 
     ADD_SURFACE(0, 2, 4, 6, Vector3D(-1, 0, 0));
     ADD_SURFACE(1, 3, 5, 7, Vector3D(1, 0, 0));
@@ -67,7 +70,7 @@ void RubicsCube::addCube(int ix, int iy, int iz) {
 #undef ADD_SURFACE
 }
 
-void RubicsCube::applySeq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev) {
+void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev) {
     assert(indexes.size() == 8);
 
     int inc = rev * 2 - 1;
@@ -115,63 +118,63 @@ void RubicsCube::undo() {
     char ch = _history.back();
     bool rev = ch >= 'a';  //if lowercase
     switch (ch - rev * 32) {
-    case 'F': rotateF(!rev); break;
-    case 'B': rotateB(!rev); break;
-    case 'U': rotateU(!rev); break;
-    case 'D': rotateD(!rev); break;
-    case 'L': rotateL(!rev); break;
-    case 'R': rotateR(!rev); break;
+    case 'F': rotate_f(!rev); break;
+    case 'B': rotate_b(!rev); break;
+    case 'U': rotate_u(!rev); break;
+    case 'D': rotate_d(!rev); break;
+    case 'L': rotate_l(!rev); break;
+    case 'R': rotate_r(!rev); break;
     default: return;
     }
 }
 
 void RubicsCube::rotate(char direction, bool rev) {
     switch (direction) {
-    case 'F': rotateF(rev); break;
-    case 'B': rotateB(rev); break;
-    case 'U': rotateU(rev); break;
-    case 'D': rotateD(rev); break;
-    case 'L': rotateL(rev); break;
-    case 'R': rotateR(rev); break;
+    case 'F': rotate_f(rev); break;
+    case 'B': rotate_b(rev); break;
+    case 'U': rotate_u(rev); break;
+    case 'D': rotate_d(rev); break;
+    case 'L': rotate_l(rev); break;
+    case 'R': rotate_r(rev); break;
     default: return;
     }
 
     _history.push_back(direction);
 }
 
-void RubicsCube::rotateF(bool rev) {
+void RubicsCube::rotate_f(bool rev) {
     EulerAngles rot = { Angle::from_degrees(rev ? 90 : -90), Angle(), Angle() };
-    applySeq({18, 21, 24, 25, 26, 23, 20, 19}, rot, rev);
+    apply_seq({18, 21, 24, 25, 26, 23, 20, 19}, rot, rev);
     _cube[22]->transform().rotate(rot);
 }
 
-void RubicsCube::rotateB(bool rev) {
+void RubicsCube::rotate_b(bool rev) {
     EulerAngles rot = { Angle::from_degrees(rev ? -90 : 90), Angle(), Angle() };
-    applySeq({ 0, 1, 2, 5, 8, 7, 6, 3 }, rot, rev);
+    apply_seq({ 0, 1, 2, 5, 8, 7, 6, 3 }, rot, rev);
     _cube[4]->transform().rotate(rot);
 }
 
-void RubicsCube::rotateL(bool rev) {
+void RubicsCube::rotate_l(bool rev) {
     EulerAngles rot = { Angle(), Angle::from_degrees(rev ? -90 : 90), Angle() };
-    applySeq({ 0, 3, 6, 15, 24, 21, 18, 9 }, rot, rev);
+    apply_seq({ 0, 3, 6, 15, 24, 21, 18, 9 }, rot, rev);
     _cube[12]->transform().rotate(rot);
 }
 
-void RubicsCube::rotateR(bool rev) {
+void RubicsCube::rotate_r(bool rev) {
     EulerAngles rot = { Angle(), Angle::from_degrees(rev ? 90 : -90), Angle() };
-    applySeq({ 8, 5, 2, 11, 20, 23, 26, 17 }, rot, rev);
+    apply_seq({ 8, 5, 2, 11, 20, 23, 26, 17 }, rot, rev);
     _cube[14]->transform().rotate(rot);
 }
 
-void RubicsCube::rotateU(bool rev) {
+void RubicsCube::rotate_u(bool rev) {
     EulerAngles rot = { Angle(), Angle(), Angle::from_degrees(rev ? 90 : -90) };
-    applySeq({ 6, 7, 8, 17, 26, 25, 24, 15 }, rot, rev);
+    apply_seq({ 6, 7, 8, 17, 26, 25, 24, 15 }, rot, rev);
     _cube[16]->transform().rotate(rot);
 }
 
-void RubicsCube::rotateD(bool rev) {
+void RubicsCube::rotate_d(bool rev) {
     EulerAngles rot = { Angle(), Angle(), Angle::from_degrees(rev ? -90 : 90) };
-    applySeq({ 2, 1, 0, 9, 18, 19, 20, 11 }, rot, rev);
+    apply_seq({ 2, 1, 0, 9, 18, 19, 20, 11 }, rot, rev);
     _cube[10]->transform().rotate(rot);
 }
 

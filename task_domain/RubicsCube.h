@@ -18,16 +18,16 @@ public:
     const Model3D& cube(int index) const noexcept;
 
 private:
-    void rotateF(bool rev);
-    void rotateB(bool rev);
-    void rotateL(bool rev);
-    void rotateR(bool rev);
-    void rotateU(bool rev);
-    void rotateD(bool rev);
+    void rotate_f(bool rev);
+    void rotate_b(bool rev);
+    void rotate_l(bool rev);
+    void rotate_r(bool rev);
+    void rotate_u(bool rev);
+    void rotate_d(bool rev);
 
-    void addCube(int ix, int iy, int iz);
+    void add_cube(int ix, int iy, int iz);
 
-    void applySeq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev);
+    void apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev);
 
     std::array<Model3D*, 27> _cube;
     std::string _history;

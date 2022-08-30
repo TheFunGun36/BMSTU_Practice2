@@ -26,6 +26,5 @@ private:
         Vector3D& intersec);
 
     std::shared_ptr<Scene> _scene;
-    std::weak_ptr<const Camera3D> _camera;
 };
 

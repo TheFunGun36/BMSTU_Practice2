@@ -14,10 +14,13 @@ public:
     Viewport(QWidget* parent = nullptr);
     void paintEvent(QPaintEvent* e) override;
 
-    void render_update(bool manual = false);
+    void render_update(bool force = false);
 
 private:
     bool _should_render;
     QPixmap _pixmap;
+
+signals:
+    void render_failed();
 };
 

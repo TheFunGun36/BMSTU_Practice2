@@ -184,14 +184,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="checkAutoRender">
         <property name="text">
          <string>Автоматическая отрисовка</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btnRender">
         <property name="text">
          <string>Отрисовать</string>
         </property>
@@ -253,7 +253,7 @@
     <property name="title">
      <string>Куб</string>
     </property>
-    <addaction name="actionCubeCancel"/>
+    <addaction name="actionCubeUndo"/>
     <addaction name="actionCubeReset"/>
    </widget>
    <widget class="QMenu" name="menuScene">
@@ -281,7 +281,7 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionCubeCancel">
+  <action name="actionCubeUndo">
    <property name="text">
     <string>Отменить поворот</string>
    </property>

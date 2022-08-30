@@ -6,10 +6,13 @@
 
 class Model3D : public VisibleObject {
     PROPERTY_RW(std::vector<Vertex>, vertex);
-    PROPERTY_RW(std::vector<Surface>, surface);
 
 public:
     Model3D() = default;
     Model3D(const Model3D&) = delete;
     Model3D(Model3D&&) = delete;
+
+    bool add_surface(const Surface& surface);
+
+    ~Model3D();
 };

@@ -8,19 +8,19 @@
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
     , _hit_count(3)
-    , _no_hit_color(0, 127, 200) {
-}
+    , _no_hit_color(0, 127, 200) {}
 
 bool Renderer::render(QImage& image) {
-    if (_camera.expired())
+    if (!_scene)
         return false;
 
-    auto camera = _camera.lock();
-    real width_half = camera->width() / 2.;
+    std::shared_ptr<const Camera3D> camera = _scene->camera();
+
+    real pixel_size = camera->height() / image.height();
     real height_half = camera->height() / 2.;
-    real pixel_size = camera->width() / image.width();
+    real width_half = pixel_size * image.width();
     Vector3D ray_start = camera->transform().position();
-    HitInfo *hit_buffer = new HitInfo[_hit_count];
+    HitInfo* hit_buffer = new HitInfo[_hit_count];
 
     for (int i = 0; i < image.width(); i++) {
         for (int j = 0; j < image.height(); j++) {
@@ -66,15 +66,14 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) {
     //real distance_squared
     for (const auto& obj : _scene->objects()) {
         if (obj.second->visible()) {
-            std::shared_ptr<Model3D> model = std::dynamic_pointer_cast<Model3D, SceneObject>(obj.second);
-            for (Surface& surface : model->surface()) {
-                Vector3D hit_pos;                
-                if (triangle_intersection(start, direction, surface, hit_pos)) {
+            for (Surface* surface : obj.second->surface()) {
+                Vector3D hit_pos;
+                if (triangle_intersection(start, direction, *surface, hit_pos)) {
                     real distance_squared = (hit_pos - start).length_squared();
                     if (distance_squared < result.distance_squared) {
                         result.hit = true;
                         result.pos = hit_pos;
-                        result.surface = &surface;
+                        result.surface = surface;
                         result.distance_squared = distance_squared;
                     }
                 }
