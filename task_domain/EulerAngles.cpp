@@ -10,49 +10,49 @@ EulerAngles::EulerAngles(const Angle& x, const Angle& y, const Angle& z)
 
 EulerAngles& EulerAngles::operator+=(const Angle& other) {
     for (int i = 0; i < 3; i++)
-        this[i] += other;
+        (*this)[i] += other;
     return *this;
 }
 
 EulerAngles& EulerAngles::operator-=(const Angle& other) {
     for (int i = 0; i < 3; i++)
-        this[i] -= other;
+        (*this)[i] -= other;
     return *this;
 }
 
 EulerAngles& EulerAngles::operator*=(real value) {
     for (int i = 0; i < 3; i++)
-        this[i] *= value;
+        (*this)[i] *= value;
     return *this;
 }
 
 EulerAngles& EulerAngles::operator/=(real value) {
     for (int i = 0; i < 3; i++)
-        this[i] /= value;
+        (*this)[i] /= value;
     return *this;
 }
 
 EulerAngles& EulerAngles::operator+=(const EulerAngles& other) {
     for (int i = 0; i < 3; i++)
-        this[i] += other[i];
+        (*this)[i] += other[i];
     return *this;
 }
 
 EulerAngles& EulerAngles::operator-=(const EulerAngles& other) {
     for (int i = 0; i < 3; i++)
-        this[i] -= other[i];
+        (*this)[i] -= other[i];
     return *this;
 }
 
 EulerAngles& EulerAngles::operator*=(const Vector3D& value) {
     for (int i = 0; i < 3; i++)
-        this[i] *= value[i];
+        (*this)[i] *= value[i];
     return *this;
 }
 
 EulerAngles& EulerAngles::operator/=(const Vector3D& value) {
     for (int i = 0; i < 3; i++)
-        this[i] /= value[i];
+        (*this)[i] /= value[i];
     return *this;
 }
 

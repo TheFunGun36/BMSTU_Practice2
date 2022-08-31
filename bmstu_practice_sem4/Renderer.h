@@ -6,6 +6,7 @@ class Scene;
 class QPainter;
 class QImage;
 class Camera3D;
+struct Triangle;
 
 class Renderer {
     PROPERTY_RW(int, hit_count);
@@ -17,13 +18,14 @@ public:
     bool render(QImage& image);
 
 private:
+
     void render_part(QImage& image, int xb, int xe, int yb, int ye);
     Color calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer);
     HitInfo throw_ray(const Vector3D& start, const Vector3D& direction) const;
     static bool triangle_intersection(
         const Vector3D& orig,
         const Vector3D& dir,
-        const Surface& surface,
+        const Triangle& triag,
         Vector3D& intersec);
 
     std::shared_ptr<Scene> _scene;

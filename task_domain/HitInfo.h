@@ -2,6 +2,7 @@
 #include "Property.h"
 #include "Vector3D.h"
 #include "Surface.h"
+#include "VisibleObject.h"
 
 struct HitInfo {
     bool hit;

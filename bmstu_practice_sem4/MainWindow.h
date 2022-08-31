@@ -23,4 +23,11 @@ private slots:
     void on_camera_reset(bool checked);
     void on_render_failed();
     void on_auto_render_checked(int check_state);
+    void on_rotate_reverse(int check_state);
+    void on_rotate_f();
+    void on_rotate_b();
+    void on_rotate_l();
+    void on_rotate_r();
+    void on_rotate_u();
+    void on_rotate_d();
 };

@@ -3,8 +3,10 @@
 #include "Color.h"
 #include <array>
 
+class VisibleObject;
+
 struct Surface {
-public:
+    VisibleObject* owner;
     Vector3D normal;
     real diffuse;
     Color color;

@@ -49,6 +49,7 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     Surface surface;
     surface.diffuse = 0.5;
     surface.color = Color(0, 40, 0);
+    surface.owner = this;
 
 #define ADD_SURFACE(x1, x2, x3, x4, n) \
     surface.normal = n; \
@@ -74,7 +75,7 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
 void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev) {
     assert(indexes.size() == 8);
 
-    int inc = rev * 2 - 1;
+    int inc = 1 - rev * 2;
     const int* begin = rev ? indexes.end() - 1 : indexes.begin();
     const int* end = rev ? indexes.begin() - 1 : indexes.end();
 

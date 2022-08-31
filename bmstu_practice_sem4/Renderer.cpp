@@ -75,9 +75,9 @@ Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer
 
     int i;
     for (i = 0; i < _hit_count - 1 && buffer[i].hit && buffer[i].surface->diffuse < 1.0; ++i) {
-        Vector3D ray = buffer[i].direction;
+        Vector3D direction = buffer[i].direction.normalized();
         Vector3D normal = buffer[i].surface->normal;
-        Vector3D bounce = ray - 2 * (ray * normal) * normal;
+        Vector3D bounce = (direction) - (normal * Vector3D::dot_product(direction, normal) * 2.);
         buffer[i + 1] = throw_ray(buffer[i].pos, bounce);
     }
 
@@ -90,16 +90,37 @@ Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer
     return result;
 }
 
+struct Triangle {
+    Vector3D v[3];
+    
+    Triangle(const Surface& surface) {
+        for (int i = 0; i < 3; ++i)
+            v[i] = surface.points[i]->pos;
+    }
+
+    void to_global(const Transform& t) {
+        for (int i = 0; i < 3; i++)
+            v[i] = t.point_to_global(v[i]);
+    }
+};
+
 HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) const {
     HitInfo result = {};
     result.direction = direction;
     result.distance_squared = INFINITY;
-    //real distance_squared
+
     for (const auto& obj : _scene->objects()) {
         if (obj.second->visible()) {
             for (Surface* surface : obj.second->surface()) {
+                if (surface->normal * direction <= 0)
+                    continue;
+
                 Vector3D hit_pos;
-                if (triangle_intersection(start, direction, *surface, hit_pos)) {
+
+                Triangle triangle(*surface);
+                triangle.to_global(obj.second->transform());
+
+                if (triangle_intersection(start, direction, triangle, hit_pos)) {
                     real distance_squared = (hit_pos - start).length_squared();
                     if (distance_squared < result.distance_squared) {
                         result.hit = true;
@@ -118,18 +139,15 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
 bool Renderer::triangle_intersection(
     const Vector3D& orig,
     const Vector3D& dir,
-    const Surface& surface,
+    const Triangle& triag,
     Vector3D& intersec) {
 
     // Алгоритм Моллера — Трумбора
     const real eps = 1e-7;
 
     // Easier naming for triangle verticies
-    Vector3D v0 = surface.points[0]->pos;
-    Vector3D v1 = surface.points[1]->pos;
-    Vector3D v2 = surface.points[2]->pos;
-    Vector3D e1 = v1 - v0;
-    Vector3D e2 = v2 - v0;
+    Vector3D e1 = triag.v[1] - triag.v[0];
+    Vector3D e2 = triag.v[2] - triag.v[0];
 
     Vector3D p = Vector3D::cross_product(dir, e2);
     real det = Vector3D::dot_product(e1, p);
@@ -137,7 +155,7 @@ bool Renderer::triangle_intersection(
         return false;  // det = 0, ray is parallel to triangle
 
     real det_inv = 1.0 / det;
-    Vector3D t = orig - v0;
+    Vector3D t = orig - triag.v[0];
     real u = det_inv * Vector3D::dot_product(t, p);
     if (u < 0.0 || u > 1.0)
         return false;
