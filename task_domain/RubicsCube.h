@@ -12,7 +12,7 @@ public:
     ~RubicsCube();
 
     std::string history() const noexcept;
-    void undo();
+    void undo();    
     void rotate(char direction, bool rev);
     void reset();
     const Model3D& cube(int index) const noexcept;

@@ -19,7 +19,8 @@ static inline int arithmeticProg(int value) {
 
 void RubicsCube::add_cube(int ix, int iy, int iz) {
     constexpr real sqrt3over3 = 0.5773502691896257;
-    const real cubeSize = 10;
+    const real cube_size = 10;
+    const real border_size = 2;
     int index = ix + iy * 3 + iz * 9;
 
     _cube[index] = new Model3D();
@@ -31,9 +32,9 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
             for (int bx = 0; bx <= 1; bx++) {
                 Vertex vertex;
                 vertex.pos = {
-                    (arithmeticProg(ix + bx) - 2) * cubeSize,
-                    (arithmeticProg(iy + by) - 2) * cubeSize,
-                    (arithmeticProg(iz + bz) - 2) * cubeSize
+                    (arithmeticProg(ix + bx) - 2) * cube_size - (bx * 2 - 1) * border_size,
+                    (arithmeticProg(iy + by) - 2) * cube_size - (by * 2 - 1) * border_size,
+                    (arithmeticProg(iz + bz) - 2) * cube_size - (bz * 2 - 1) * border_size
                 };
                 vertex.normal = {
                     sqrt3over3 * bx * 2 - sqrt3over3,
@@ -46,7 +47,7 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     }
 
     Surface surface;
-    surface.diffuse = 0.01;
+    surface.diffuse = 0.5;
     surface.color = Color(0, 40, 0);
 
 #define ADD_SURFACE(x1, x2, x3, x4, n) \
@@ -144,7 +145,7 @@ void RubicsCube::rotate(char direction, bool rev) {
 
 void RubicsCube::rotate_f(bool rev) {
     EulerAngles rot = { Angle::from_degrees(rev ? 90 : -90), Angle(), Angle() };
-    apply_seq({18, 21, 24, 25, 26, 23, 20, 19}, rot, rev);
+    apply_seq({ 18, 21, 24, 25, 26, 23, 20, 19 }, rot, rev);
     _cube[22]->transform().rotate(rot);
 }
 

@@ -4,30 +4,59 @@
 #include "Scene.h"
 #include <qpainter.h>
 #include <qimage.h>
+#include <thread>
 
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
     , _hit_count(3)
     , _no_hit_color(0, 127, 200) {}
 
+struct RenderData {
+    std::shared_ptr<const Camera3D> camera;
+    real width_half;
+    real height_half;
+    real pixel_size;
+};
+
 bool Renderer::render(QImage& image) {
     if (!_scene)
         return false;
 
+    int pixels_x = image.width();
+    int pixels_y = image.height();
+
+    const int threads_amount = 12;
+    std::thread threads[threads_amount];
+    int chunk = pixels_y / threads_amount;
+    for (int i = 0; i < threads_amount; ++i) {
+        threads[i] = std::thread(
+            [this, pixels_x, &image](int yb, int ye) {
+                render_part(image, 0, pixels_x, yb, ye);
+            },
+            i * chunk, (i + 1) * chunk);
+    }
+    render_part(image, 0, pixels_x, 7 * chunk, pixels_y);
+    for (int i = 0; i < threads_amount; i++)
+        threads[i].join();
+
+    return true;
+}
+
+void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
     std::shared_ptr<const Camera3D> camera = _scene->camera();
 
     real pixel_size = camera->height() / image.height();
     real height_half = camera->height() / 2.;
-    real width_half = pixel_size * image.width();
+    real width_half = pixel_size * image.width() / 2;
     Vector3D ray_start = camera->transform().position();
     HitInfo* hit_buffer = new HitInfo[_hit_count];
 
-    for (int i = 0; i < image.width(); i++) {
-        for (int j = 0; j < image.height(); j++) {
+    for (int i = yb; i < ye; i++) {
+        for (int j = xb; j < xe; j++) {
             Vector3D ray_point = {
                 camera->distance(),
-                width_half - (i + 0.5) * pixel_size,
-                height_half - (j + 0.5) * pixel_size
+                width_half - (j + 0.5) * pixel_size,
+                height_half - (i + 0.5) * pixel_size
             };
             ray_point = camera->transform().point_to_global(ray_point);
             Vector3D ray_direction = ray_point - ray_start;
@@ -35,10 +64,9 @@ bool Renderer::render(QImage& image) {
 
             Color color = hit ? calculate_surface_color(hit, hit_buffer) : _no_hit_color;
 
-            image.setPixelColor(i, j, qRgb(color.r, color.g, color.b));
+            image.setPixelColor(j, i, qRgb(color.r, color.g, color.b));
         }
     }
-    return true;
 }
 
 Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer) {
@@ -54,15 +82,18 @@ Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer
     }
 
     Color result = _no_hit_color;
-    while (i >= 0)
-        result = Color::blend(buffer[--i].surface->color, result, buffer[--i].surface->diffuse);
+    while (i > 0) {
+        --i;
+        result = Color::blend(buffer[i].surface->color, result, buffer[i].surface->diffuse);
+    }
 
     return result;
 }
 
-HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) {
+HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) const {
     HitInfo result = {};
     result.direction = direction;
+    result.distance_squared = INFINITY;
     //real distance_squared
     for (const auto& obj : _scene->objects()) {
         if (obj.second->visible()) {
@@ -94,32 +125,32 @@ bool Renderer::triangle_intersection(
     const real eps = 1e-7;
 
     // Easier naming for triangle verticies
-    Vector3D vertex0 = surface.points[0]->pos;
-    Vector3D vertex1 = surface.points[1]->pos;
-    Vector3D vertex2 = surface.points[2]->pos;
-    Vector3D edge1 = vertex1 - vertex0;
-    Vector3D edge2 = vertex2 - vertex0;
+    Vector3D v0 = surface.points[0]->pos;
+    Vector3D v1 = surface.points[1]->pos;
+    Vector3D v2 = surface.points[2]->pos;
+    Vector3D e1 = v1 - v0;
+    Vector3D e2 = v2 - v0;
 
-    Vector3D h = Vector3D::cross_product(dir, edge2);
-    real a = Vector3D::dot_product(edge1, h);
-    if (a > -eps && a < eps)
-        return false;  // a = 0, ray is parallel to triangle
+    Vector3D p = Vector3D::cross_product(dir, e2);
+    real det = Vector3D::dot_product(e1, p);
+    if (det > -eps && det < eps)
+        return false;  // det = 0, ray is parallel to triangle
 
-    real f = 1.0 / a;
-    Vector3D s = dir - vertex0;
-    real u = f * Vector3D::dot_product(s, h);
+    real det_inv = 1.0 / det;
+    Vector3D t = orig - v0;
+    real u = det_inv * Vector3D::dot_product(t, p);
     if (u < 0.0 || u > 1.0)
         return false;
 
-    Vector3D q = Vector3D::cross_product(s, edge1);
-    real v = f * Vector3D::dot_product(dir, q);
+    Vector3D q = Vector3D::cross_product(t, e1);
+    real v = det_inv * Vector3D::dot_product(dir, q);
     if (v < 0.0 || u + v > 1.0)
         return false;
 
-    real t = f * Vector3D::dot_product(edge2, q);
-    if (t <= eps)
+    real t1 = det_inv * Vector3D::dot_product(e2, q);
+    if (t1 <= eps)
         return false;
 
-    intersec = orig + dir * t;
+    intersec = orig + dir * t1;
     return true;
 }
