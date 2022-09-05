@@ -30,4 +30,5 @@ private slots:
     void on_rotate_r();
     void on_rotate_u();
     void on_rotate_d();
+    void on_rotate(char direction);
 };

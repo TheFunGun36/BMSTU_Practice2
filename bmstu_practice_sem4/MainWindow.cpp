@@ -78,25 +78,30 @@ void MainWindow::on_rotate_reverse(int check_state) {
 }
 
 void MainWindow::on_rotate_f() {
-    _scene->cube()->rotate('F', _ui.btnRotateF->isChecked());
+    on_rotate('F');
 }
 
 void MainWindow::on_rotate_b() {
-
+    on_rotate('B');
 }
 
 void MainWindow::on_rotate_l() {
-
+    on_rotate('L');
 }
 
 void MainWindow::on_rotate_r() {
-
+    on_rotate('R');
 }
 
 void MainWindow::on_rotate_u() {
-
+    on_rotate('U');
 }
 
 void MainWindow::on_rotate_d() {
+    on_rotate('D');
+}
 
+void MainWindow::on_rotate(char direction) {
+    _scene->cube()->rotate(direction, _ui.checkRotateRev->isChecked());
+    _ui.lineHistory->setText(QString::fromStdString(_scene->cube()->history()));
 }

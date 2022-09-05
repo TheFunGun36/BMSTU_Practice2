@@ -141,7 +141,7 @@ void RubicsCube::rotate(char direction, bool rev) {
     default: return;
     }
 
-    _history.push_back(direction);
+    _history.push_back(direction + (rev ? 'a' - 'A' : 0));
 }
 
 void RubicsCube::rotate_f(bool rev) {
