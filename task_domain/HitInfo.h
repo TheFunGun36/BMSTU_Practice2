@@ -8,8 +8,9 @@ struct HitInfo {
     bool hit;
     Vector3D pos;
     Vector3D direction;
+    Vector3D bounce;
     Surface* surface;
-    real distance_squared;
+    real distance;
 
     operator bool() { return hit; }
 };
