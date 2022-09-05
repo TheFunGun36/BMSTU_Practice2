@@ -117,8 +117,8 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
 
                 Vector3D hit_pos;
 
-                Triangle triangle(*surface);
-                triangle.to_global(obj.second->transform());
+                Triangle triangle(*surface); 
+                triangle.to_global(surface->owner->transform());
 
                 if (triangle_intersection(start, direction, triangle, hit_pos)) {
                     real distance_squared = (hit_pos - start).length_squared();
