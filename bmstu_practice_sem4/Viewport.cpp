@@ -6,7 +6,8 @@ Viewport::Viewport(QWidget* parent)
     : QWidget(parent)
     , _pixmap(width(), height())
     , _should_render(false)
-    , _auto_render(false) {
+    , _auto_render(false)
+    , _resolution(1) {
 }
 
 void Viewport::paintEvent(QPaintEvent* e) {
@@ -14,14 +15,14 @@ void Viewport::paintEvent(QPaintEvent* e) {
     QPainter qp(this);
 
     if (_should_render) {
-        QImage image = QPixmap(width(), height()).toImage();
+        QImage image = QPixmap(width() / _resolution, height() / _resolution).toImage();
         if (!_renderer->render(image)) {
             _should_render = false;
             emit render_failed();
             return;
         }
         else {
-            _pixmap = QPixmap::fromImage(image);
+            _pixmap = QPixmap::fromImage(image.scaledToHeight(height()));
             _should_render = _auto_render;
         }
     }

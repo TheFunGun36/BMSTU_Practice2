@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(_ui.btnRotateD, &QPushButton::clicked, this, &MainWindow::on_rotate_d);
 
     connect(_ui.checkRotateRev, &QCheckBox::stateChanged, this, &MainWindow::on_rotate_reverse);
+    connect(_ui.spinScale, &QSpinBox::valueChanged, this, &MainWindow::on_resolution_changed);
 }
 
 
@@ -104,4 +105,8 @@ void MainWindow::on_rotate_d() {
 void MainWindow::on_rotate(char direction) {
     _scene->cube()->rotate(direction, _ui.checkRotateRev->isChecked());
     _ui.lineHistory->setText(QString::fromStdString(_scene->cube()->history()));
+}
+
+void MainWindow::on_resolution_changed(int value) {
+    _ui.displayPort->set_resolution(value);
 }

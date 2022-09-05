@@ -31,4 +31,5 @@ private slots:
     void on_rotate_u();
     void on_rotate_d();
     void on_rotate(char direction);
+    void on_resolution_changed(int value);
 };
