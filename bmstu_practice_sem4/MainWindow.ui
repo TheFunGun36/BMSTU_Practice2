@@ -302,6 +302,7 @@
      <string>Сцена</string>
     </property>
     <addaction name="actionSceneLoad"/>
+    <addaction name="actionRenderSimple"/>
    </widget>
    <widget class="QMenu" name="menuCamera">
     <property name="title">
@@ -340,6 +341,14 @@
   <action name="actionCameraReset">
    <property name="text">
     <string>В исходное состояние</string>
+   </property>
+  </action>
+  <action name="actionRenderSimple">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Простая отрисовка</string>
    </property>
   </action>
  </widget>

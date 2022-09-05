@@ -146,39 +146,39 @@ void RubicsCube::rotate(char direction, bool rev) {
 }
 
 void RubicsCube::rotate_f(bool rev) {
-    EulerAngles rot = { Angle::from_degrees(rev ? 90 : -90), Angle(), Angle() };
-    apply_seq({ 0, 3, 6, 15, 24, 21, 18, 9 }, rot, rev); // -X
-    _cube[22]->transform().rotate(rot);
-}
-
-void RubicsCube::rotate_b(bool rev) {
     EulerAngles rot = { Angle::from_degrees(rev ? -90 : 90), Angle(), Angle() };
-    apply_seq({ 8, 5, 2, 11, 20, 23, 26, 17 }, rot, rev); // +X
-    _cube[4]->transform().rotate(rot);
-}
-
-void RubicsCube::rotate_l(bool rev) {
-    EulerAngles rot = { Angle(), Angle::from_degrees(rev ? -90 : 90), Angle() };
-    apply_seq({ 6, 7, 8, 17, 26, 25, 24, 15 }, rot, rev); // +Y
+    apply_seq({ 0, 3, 6, 15, 24, 21, 18, 9 }, rot, rev); // -X
     _cube[12]->transform().rotate(rot);
 }
 
-void RubicsCube::rotate_r(bool rev) {
-    EulerAngles rot = { Angle(), Angle::from_degrees(rev ? 90 : -90), Angle() };
-    apply_seq({ 2, 1, 0, 9, 18, 19, 20, 11 }, rot, rev); // -Y
+void RubicsCube::rotate_b(bool rev) {
+    EulerAngles rot = { Angle::from_degrees(rev ? 90 : -90), Angle(), Angle() };
+    apply_seq({ 8, 5, 2, 11, 20, 23, 26, 17 }, rot, rev); // +X
     _cube[14]->transform().rotate(rot);
+}
+
+void RubicsCube::rotate_l(bool rev) {
+    EulerAngles rot = { Angle(), Angle::from_degrees(rev ? 90 : -90), Angle() };
+    apply_seq({ 6, 7, 8, 17, 26, 25, 24, 15 }, rot, rev); // +Y
+    _cube[16]->transform().rotate(rot);
+}
+
+void RubicsCube::rotate_r(bool rev) {
+    EulerAngles rot = { Angle(), Angle::from_degrees(rev ? -90 : 90), Angle() };
+    apply_seq({ 2, 1, 0, 9, 18, 19, 20, 11 }, rot, rev); // -Y
+    _cube[10]->transform().rotate(rot);
 }
 
 void RubicsCube::rotate_u(bool rev) {
     EulerAngles rot = { Angle(), Angle(), Angle::from_degrees(rev ? 90 : -90) };
-    apply_seq({ 0, 1, 2, 5, 8, 7, 6, 3 }, rot, rev); // -Z
-    _cube[16]->transform().rotate(rot);
+    apply_seq({ 18, 21, 24, 25, 26, 23, 20, 19 }, rot, rev); // +Z
+    _cube[22]->transform().rotate(rot);
 }
 
 void RubicsCube::rotate_d(bool rev) {
     EulerAngles rot = { Angle(), Angle(), Angle::from_degrees(rev ? -90 : 90) };
-    apply_seq({ 18, 21, 24, 25, 26, 23, 20, 19 }, rot, rev); // +Z
-    _cube[10]->transform().rotate(rot);
+    apply_seq({ 0, 1, 2, 5, 8, 7, 6, 3 }, rot, rev); // -Z
+    _cube[4]->transform().rotate(rot);
 }
 
 void RubicsCube::reset() {

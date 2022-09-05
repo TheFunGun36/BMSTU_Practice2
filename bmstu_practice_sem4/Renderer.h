@@ -4,6 +4,7 @@
 
 class Scene;
 class QPainter;
+class QPixmap;
 class QImage;
 class Camera3D;
 struct Triangle;
@@ -16,6 +17,7 @@ public:
     Renderer(const std::shared_ptr<Scene>& scene);
 
     bool render(QImage& image);
+    bool render_simple(QPixmap& pixmap);
 
 private:
 

@@ -9,6 +9,7 @@ class Viewport : public QWidget {
 public:
     PROPERTY_RW(std::shared_ptr<Renderer>, renderer);
     PROPERTY_RW(bool, auto_render);
+    PROPERTY_RW(bool, render_simple);
     PROPERTY_RW(int, resolution);
 
 public:

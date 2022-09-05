@@ -6,6 +6,25 @@
 #include <qimage.h>
 #include <thread>
 
+struct Triangle {
+    Vector3D v[3];
+
+    Triangle(const Surface& surface) {
+        for (int i = 0; i < 3; ++i)
+            v[i] = surface.points[i]->pos;
+    }
+
+    void to_global(const Transform& t) {
+        for (int i = 0; i < 3; i++)
+            v[i] = t.point_to_global(v[i]);
+    }
+
+    void to_local(const Transform& t) {
+        for (int i = 0; i < 3; i++)
+            v[i] = t.point_to_local(v[i]);
+    }
+};
+
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
     , _hit_count(3)
@@ -38,6 +57,42 @@ bool Renderer::render(QImage& image) {
     render_part(image, 0, pixels_x, 7 * chunk, pixels_y);
     for (int i = 0; i < threads_amount; i++)
         threads[i].join();
+
+    return true;
+}
+
+bool Renderer::render_simple(QPixmap& pixmap) {
+    if (!_scene)
+        return false;
+
+    int x[3];
+    int y[3];
+    real cam_dist = _scene->camera()->distance();
+    real scaling = pixmap.height() / _scene->camera()->height() * 0.8;
+    QPainter qp(&pixmap);
+    qp.fillRect(pixmap.rect(), Qt::white);
+    qp.setPen(qRgb(0, 0, 0));
+
+    for (const auto& obj : _scene->objects()) {
+        if (obj.second->visible()) {
+            std::shared_ptr<VisibleObject> model = std::static_pointer_cast<VisibleObject, SceneObject>(obj.second);
+            for (auto surf : model->surface()) {
+                Triangle triag(*surf);
+                triag.to_global(surf->owner->transform());
+                triag.to_local(_scene->camera()->transform());
+
+                for (int i = 0; i < 3; i++) {
+                    real k = cam_dist / (-triag.v[i].x() + cam_dist) * scaling;
+                    x[i] = k * triag.v[i].y() + pixmap.width() / 2;
+                    y[i] = k * triag.v[i].z() + pixmap.height() / 2;
+                }
+
+                qp.drawLine(x[0], y[0], x[1], y[1]);
+                qp.drawLine(x[0], y[0], x[2], y[2]);
+                qp.drawLine(x[1], y[1], x[2], y[2]);
+            }
+        }
+    }
 
     return true;
 }
@@ -89,20 +144,6 @@ Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer
 
     return result;
 }
-
-struct Triangle {
-    Vector3D v[3];
-    
-    Triangle(const Surface& surface) {
-        for (int i = 0; i < 3; ++i)
-            v[i] = surface.points[i]->pos;
-    }
-
-    void to_global(const Transform& t) {
-        for (int i = 0; i < 3; i++)
-            v[i] = t.point_to_global(v[i]);
-    }
-};
 
 HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) const {
     HitInfo result = {};

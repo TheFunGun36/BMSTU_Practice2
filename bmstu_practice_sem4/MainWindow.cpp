@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     connect(_ui.checkRotateRev, &QCheckBox::stateChanged, this, &MainWindow::on_rotate_reverse);
     connect(_ui.spinScale, &QSpinBox::valueChanged, this, &MainWindow::on_resolution_changed);
+    connect(_ui.actionRenderSimple, &QAction::triggered, this, &MainWindow::on_render_simple_changed);
 }
 
 
@@ -109,4 +110,8 @@ void MainWindow::on_rotate(char direction) {
 
 void MainWindow::on_resolution_changed(int value) {
     _ui.displayPort->set_resolution(value);
+}
+
+void MainWindow::on_render_simple_changed(int value) {
+    _ui.displayPort->set_render_simple(value);
 }
