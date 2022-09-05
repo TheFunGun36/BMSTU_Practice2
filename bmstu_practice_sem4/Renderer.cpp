@@ -44,6 +44,7 @@ bool Renderer::render(QImage& image) {
     int pixels_x = image.width();
     int pixels_y = image.height();
 
+#ifndef _DEBUG
     const int threads_amount = 12;
     std::thread threads[threads_amount];
     int chunk = pixels_y / threads_amount;
@@ -57,6 +58,9 @@ bool Renderer::render(QImage& image) {
     render_part(image, 0, pixels_x, 7 * chunk, pixels_y);
     for (int i = 0; i < threads_amount; i++)
         threads[i].join();
+#else
+    render_part(image, 0, pixels_x, 0, pixels_y);
+#endif
 
     return true;
 }
@@ -67,8 +71,8 @@ bool Renderer::render_simple(QPixmap& pixmap) {
 
     int x[3];
     int y[3];
-    real cam_dist = _scene->camera()->distance();
-    real scaling = pixmap.height() / _scene->camera()->height() * 0.8;
+    real cam_dist = _scene->camera()->distance() + _scene->camera()->transform().position().x();
+    real scaling = pixmap.height() / _scene->camera()->height();
     QPainter qp(&pixmap);
     qp.fillRect(pixmap.rect(), Qt::white);
     qp.setPen(qRgb(0, 0, 0));
@@ -82,7 +86,7 @@ bool Renderer::render_simple(QPixmap& pixmap) {
                 triag.to_local(_scene->camera()->transform());
 
                 for (int i = 0; i < 3; i++) {
-                    real k = cam_dist / (-triag.v[i].x() + cam_dist) * scaling;
+                    real k = -cam_dist / (-triag.v[i].x() + cam_dist) * scaling;
                     x[i] = k * triag.v[i].y() + pixmap.width() / 2;
                     y[i] = k * triag.v[i].z() + pixmap.height() / 2;
                 }

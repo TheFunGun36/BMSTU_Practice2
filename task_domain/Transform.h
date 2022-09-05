@@ -1,12 +1,13 @@
 #pragma once
 #include "Vector3D.h"
 #include "EulerAngles.h"
+#include "Quaternion.h"
 #include "Property.h"
 
 class Transform : public Printable {
     PROPERTY_RW(Vector3D, position);
     PROPERTY_RW(Vector3D, scale);
-    PROPERTY_RW(EulerAngles, rotation);
+    PROPERTY_RW(Quaternion, rotation);
 public:
     Transform(const Transform& other) = default;
     Transform(Vector3D position = Vector3D(),
@@ -17,13 +18,11 @@ public:
     Vector3D point_to_global(Vector3D point) const noexcept;
 
     void translate(const Vector3D& value);
-    void rotate(const EulerAngles& value);
+    void rotate_world(const EulerAngles& value);
+    void rotate_world(const Quaternion& value);
+    void rotate_local(const EulerAngles& value);
+    void rotate_local(const Quaternion& value);
     void scale(const Vector3D& value);
-
-    void rotate(const EulerAngles& value, const Vector3D& center);
-    void rotate_x(const Angle& value, const Vector3D& center);
-    void rotate_y(const Angle& value, const Vector3D& center);
-    void rotate_z(const Angle& value, const Vector3D& center);
 
 protected:
     virtual std::ostream& add_to_stream(std::ostream& stream) const;

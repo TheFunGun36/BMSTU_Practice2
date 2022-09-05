@@ -1,7 +1,7 @@
 #include "Transform.h"
 
 Transform::Transform(Vector3D position, EulerAngles rotation, Vector3D scale)
-    :_position(position), _rotation(rotation), _scale(scale) {}
+    : _position(position), _rotation(rotation), _scale(scale) {}
 
 Vector3D Transform::point_to_local(Vector3D point) const noexcept {
     point -= _position;
@@ -23,35 +23,20 @@ void Transform::translate(const Vector3D& value) {
     _position += value;
 }
 
-void Transform::rotate(const EulerAngles& value) {
-    _rotation += value;
+void Transform::rotate_world(const EulerAngles& value) {
+    _rotation = _rotation * Quaternion(value);
 }
 
-void Transform::rotate(const EulerAngles& value, const Vector3D& center) {
-    rotate_x(value.x(), center);
-    rotate_y(value.y(), center);
-    rotate_z(value.z(), center);
+void Transform::rotate_world(const Quaternion& value) {
+    _rotation = _rotation * value;
 }
 
-void Transform::rotate_x(const Angle& value, const Vector3D& center) {
-    Vector3D delta(_position - center);
-    _position.set_y(center + delta.y() * value.cos() - delta.z() * value.sin());
-    _position.set_z(center + delta.y() * value.sin() + delta.z() * value.cos());
-    _rotation.x() += value;
+void Transform::rotate_local(const EulerAngles& value) {
+    _rotation = Quaternion(value) * _rotation;
 }
 
-void Transform::rotate_y(const Angle& value, const Vector3D& center) {
-    Vector3D delta(_position - center);
-    _position.set_x(center + delta.x() * value.cos() - delta.z() * value.sin());
-    _position.set_z(center + delta.x() * value.sin() + delta.z() * value.cos());
-    _rotation.y() += value;
-}
-
-void Transform::rotate_z(const Angle& value, const Vector3D& center) {
-    Vector3D delta(_position - center);
-    _position.set_x(delta.x() * value.cos() - delta.y() * value.sin());
-    _position.set_y(delta.x() * value.sin() + delta.y() * value.cos());
-    _rotation.z() += value;
+void Transform::rotate_local(const Quaternion& value) {
+    _rotation = value * _rotation;
 }
 
 void Transform::scale(const Vector3D& value) {

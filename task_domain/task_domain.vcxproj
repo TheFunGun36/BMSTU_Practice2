@@ -26,6 +26,7 @@
     <ClCompile Include="HitInfo.cpp" />
     <ClCompile Include="Model3D.cpp" />
     <ClCompile Include="Printable.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Real.cpp" />
     <ClCompile Include="RubicsCube.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Printable.h" />
     <ClInclude Include="Property.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Real.h" />
     <ClInclude Include="RubicsCube.h" />
     <ClInclude Include="Scene.h" />
