@@ -18,58 +18,35 @@ static inline int arithmeticProg(int value) {
 }
 
 void RubicsCube::add_cube(int ix, int iy, int iz) {
-    constexpr real sqrt3over3 = 0.5773502691896257;
-    const real cube_size = 10;
-    const real border_size = 2;
+    const real cube_size = 20;
+
+    Surface fill;
+    fill.diffuse = 0.1;
+    fill.color = Color(0, 40, 0);
+
+    Surface border;
+    border.diffuse = 1.0;
+    border.color = Color(40, 40, 40);
+
+    Vector3D size(
+        (arithmeticProg(ix) + 1) * cube_size,
+        (arithmeticProg(iy) + 1) * cube_size,
+        (arithmeticProg(iz) + 1) * cube_size
+    );
+
+    Vector3D offset(
+        (arithmeticProg(ix) - 2) * cube_size,
+        (arithmeticProg(iy) - 2) * cube_size,
+        (arithmeticProg(iz) - 2) * cube_size
+    );
+
+    Vector3D border_size(3., 3., 3.);
+
     int index = ix + iy * 3 + iz * 9;
-
-    _cube[index] = new Model3D();
-    _cube[index]->vertex().reserve(8);
-    _cube[index]->surface().reserve(12);
-
-    for (int bz = 0; bz <= 1; bz++) {
-        for (int by = 0; by <= 1; by++) {
-            for (int bx = 0; bx <= 1; bx++) {
-                Vertex vertex;
-                vertex.pos = {
-                    (arithmeticProg(ix + bx) - 2) * cube_size - (bx * 2 - 1) * border_size,
-                    (arithmeticProg(iy + by) - 2) * cube_size - (by * 2 - 1) * border_size,
-                    (arithmeticProg(iz + bz) - 2) * cube_size - (bz * 2 - 1) * border_size
-                };
-                vertex.normal = {
-                    sqrt3over3 * bx * 2 - sqrt3over3,
-                    sqrt3over3 * by * 2 - sqrt3over3,
-                    sqrt3over3 * bz * 2 - sqrt3over3,
-                };
-                _cube[index]->vertex().push_back(vertex);
-            }
-        }
-    }
-
-    Surface surface;
-    surface.diffuse = 0.5;
-    surface.color = Color(0, 40, 0);
-    surface.owner = _cube[index];
-
-#define ADD_SURFACE(x1, x2, x3, x4, n) \
-    surface.normal = n; \
-    surface.points[0] = &_cube[index]->vertex()[x1]; \
-    surface.points[1] = &_cube[index]->vertex()[x2]; \
-    surface.points[2] = &_cube[index]->vertex()[x3]; \
-    _cube[index]->add_surface(surface); \
-    this->surface().push_back(_cube[index]->surface().back()); \
-    surface.points[0] = &_cube[index]->vertex()[x4]; \
-    _cube[index]->add_surface(surface); \
-    this->surface().push_back(_cube[index]->surface().back());
-
-    ADD_SURFACE(0, 2, 4, 6, Vector3D(-1, 0, 0));
-    ADD_SURFACE(1, 3, 5, 7, Vector3D(1, 0, 0));
-    ADD_SURFACE(0, 1, 4, 5, Vector3D(0, -1, 0));
-    ADD_SURFACE(2, 3, 6, 7, Vector3D(0, 1, 0));
-    ADD_SURFACE(0, 1, 2, 3, Vector3D(0, 0, -1));
-    ADD_SURFACE(4, 5, 6, 7, Vector3D(0, 0, 1));
-
-#undef ADD_SURFACE
+    _cube[index] = new Cube(fill, border, size, border_size, offset);
+    surface().reserve(24);
+    for (auto s : _cube[index]->surface())
+        surface().push_back(s);
 }
 
 void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev) {
@@ -80,7 +57,7 @@ void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles
 
     const int* it = begin;
 
-    Model3D* tmp = _cube[*it];
+    Cube* tmp = _cube[*it];
     it += inc;
     while (it != end) {
         _cube[*(it - inc)] = _cube[*it];
@@ -190,6 +167,6 @@ void RubicsCube::reset() {
         undo();
 }
 
-const Model3D& RubicsCube::cube(int index) const noexcept {
+const Cube& RubicsCube::cube(int index) const noexcept {
     return *_cube[index];
 }

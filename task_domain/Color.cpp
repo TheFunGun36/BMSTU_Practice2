@@ -15,6 +15,27 @@ bool Color::isValid() {
     return inRange(r) && inRange(g) && inRange(b) && inRange(alpha);
 }
 
+Color& Color::operator+=(const Color& other) {
+    r += other.r;
+    g += other.g;
+    b += other.b;
+    return *this;
+}
+
+Color Color::operator+(const Color& other) {
+    return Color(r + other.r, g + other.g, b + other.b);
+}
+
+Color& Color::operator*=(real v) {
+    r *= v;
+    g *= v;
+    b *= v;
+    return *this;
+}
+Color Color::operator*(real v) {
+    return Color(r * v, g * v, b * v);
+}
+
 Color Color::blend(Color a, Color b, real coef) {
     const real rev_coef = 1 - coef;
     return Color(

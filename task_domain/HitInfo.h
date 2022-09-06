@@ -9,6 +9,7 @@ struct HitInfo {
     Vector3D pos;
     Vector3D direction;
     Vector3D bounce;
+    Vector3D normal;
     Surface* surface;
     real distance;
 

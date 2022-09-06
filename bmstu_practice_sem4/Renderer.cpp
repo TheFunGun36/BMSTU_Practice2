@@ -5,13 +5,14 @@
 #include <qpainter.h>
 #include <qimage.h>
 #include <thread>
+#include <stack>
 
 struct Triangle {
     Vector3D v[3];
 
     Triangle(const Surface& surface) {
         for (int i = 0; i < 3; ++i)
-            v[i] = surface.points[i]->pos;
+            v[i] = *surface.points[i];
     }
 
     void to_global(const Transform& t) {
@@ -27,8 +28,8 @@ struct Triangle {
 
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
-    , _hit_count(3)
-    , _no_hit_color(0, 127, 200) {}
+    , _no_hit_color(0, 127, 200) {
+}
 
 struct RenderData {
     std::shared_ptr<const Camera3D> camera;
@@ -108,7 +109,6 @@ void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
     real height_half = camera->height() / 2.;
     real width_half = pixel_size * image.width() / 2;
     Vector3D ray_start = camera->transform().position();
-    HitInfo* hit_buffer = new HitInfo[_hit_count];
 
     for (int i = yb; i < ye; i++) {
         for (int j = xb; j < xe; j++) {
@@ -119,28 +119,31 @@ void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
             };
             ray_point = camera->transform().point_to_global(ray_point);
             Vector3D ray_direction = ray_point - ray_start;
-            HitInfo hit = throw_ray(ray_point, ray_direction);
 
-            Color color = hit ? calculate_surface_color(hit, hit_buffer) : _no_hit_color;
+            Color color = calculate_surface_color(ray_start, ray_direction);
 
             image.setPixelColor(j, i, qRgb(color.r, color.g, color.b));
         }
     }
 }
 
-Color Renderer::calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer) {
-    assert(_hit_count > 0);
-    buffer[0] = hit_info;
+Color Renderer::calculate_surface_color(Vector3D source, Vector3D direction) {
+    constexpr int hits_amount = 3;
+    HitInfo hits[hits_amount];
 
-    int i;
-    for (i = 0; i < _hit_count - 1 && buffer[i].hit && buffer[i].surface->diffuse < 1.0; ++i) {
-        buffer[i + 1] = throw_ray(buffer[i].pos, buffer[i].bounce);
+    int i = 0;
+    for (; i < hits_amount; i++) {
+        hits[i] = throw_ray(source, direction);
+        if (!hits[i].hit)
+            break;
+
+        source = hits[i].pos;
+        direction = hits[i].bounce;
     }
-
+    --i;
     Color result = _no_hit_color;
-    while (i > 0) {
-        --i;
-        result = Color::blend(buffer[i].surface->color, result, buffer[i].surface->diffuse);
+    for (; i >= 0; --i) {
+        result = Color::blend(hits[i].surface->color, result, hits[i].surface->diffuse);
     }
 
     return result;
@@ -150,29 +153,34 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
     HitInfo result = {};
     result.direction = direction;
     result.distance = INFINITY;
+    Vector3D normal;
+    real a;
 
     for (const auto& obj : _scene->objects()) {
         if (obj.second->visible()) {
             for (Surface* surface : obj.second->surface()) {
-                Vector3D hit_pos;
+                normal = surface->owner->transform().point_to_global(surface->normal);
+                if (normal * direction >= 0)
+                    continue;
 
-                Triangle triangle(*surface); 
+                Triangle triangle(*surface);
                 triangle.to_global(surface->owner->transform());
 
+                Vector3D hit_pos;
                 real distance = triangle_intersection(start, direction, triangle, hit_pos);
                 if (distance > 0 && distance < result.distance) {
                     result.hit = true;
                     result.pos = hit_pos;
                     result.surface = surface;
                     result.distance = distance;
+                    result.normal = normal;
                 }
             }
         }
     }
 
     if (result) {
-        Vector3D normal = result.surface->owner->transform().point_to_global(result.surface->normal);
-        result.bounce = direction - (normal * Vector3D::dot_product(direction, normal) * 2.);
+        result.bounce = direction - (result.normal * Vector3D::dot_product(direction, result.normal) * 2.);
     }
 
     return result;
@@ -185,7 +193,7 @@ real Renderer::triangle_intersection(
     Vector3D& intersec) {
 
     // Алгоритм Моллера — Трумбора
-    const real eps = 1e-7;
+    const real eps = 1e-14;
 
     // Easier naming for triangle verticies
     Vector3D e1 = triag.v[1] - triag.v[0];

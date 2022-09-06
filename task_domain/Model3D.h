@@ -1,11 +1,10 @@
 #pragma once
 #include "VisibleObject.h"
-#include "Vertex.h"
 #include "Surface.h"
 #include <vector>
 
 class Model3D : public VisibleObject {
-    PROPERTY_RW(std::vector<Vertex>, vertex);
+    PROPERTY_RW(std::vector<Vector3D>, vertex);
 
 public:
     Model3D() = default;

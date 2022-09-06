@@ -10,7 +10,6 @@ class Camera3D;
 struct Triangle;
 
 class Renderer {
-    PROPERTY_RW(int, hit_count);
     PROPERTY_RW(Color, no_hit_color);
 
 public:
@@ -22,7 +21,7 @@ public:
 private:
 
     void render_part(QImage& image, int xb, int xe, int yb, int ye);
-    Color calculate_surface_color(const HitInfo& hit_info, HitInfo* buffer);
+    Color calculate_surface_color(Vector3D source, Vector3D direction);
     HitInfo throw_ray(const Vector3D& start, const Vector3D& direction) const;
     static real triangle_intersection(
         const Vector3D& orig,
