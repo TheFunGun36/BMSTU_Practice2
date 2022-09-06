@@ -122,6 +122,10 @@ Angle Angle::operator/(real value) const {
     return copy;
 }
 
+Angle Angle::operator-() const {
+    return Angle::from_radians(-_radians);
+}
+
 std::ostream& Angle::add_to_stream(std::ostream& stream) const {
     return stream << "radians(" << radians() << ")";
 }

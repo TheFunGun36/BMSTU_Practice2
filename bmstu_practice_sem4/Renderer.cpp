@@ -72,30 +72,27 @@ bool Renderer::render_simple(QPixmap& pixmap) {
 
     int x[3];
     int y[3];
-    real cam_dist = _scene->camera()->distance() + _scene->camera()->transform().position().x();
+    real cam_dist = _scene->camera()->distance() + _scene->camera()->transform().position().x() * 0.5;
     real scaling = pixmap.height() / _scene->camera()->height();
     QPainter qp(&pixmap);
     qp.fillRect(pixmap.rect(), Qt::white);
     qp.setPen(qRgb(0, 0, 0));
 
     for (const auto& obj : _scene->objects()) {
-        if (obj.second->visible()) {
-            std::shared_ptr<VisibleObject> model = std::static_pointer_cast<VisibleObject, SceneObject>(obj.second);
-            for (auto surf : model->surface()) {
-                Triangle triag(*surf);
-                triag.to_global(surf->owner->transform());
-                triag.to_local(_scene->camera()->transform());
+        for (auto surf : obj.second->surface()) {
+            Triangle triag(*surf);
+            triag.to_global(surf->owner->transform());
+            triag.to_local(_scene->camera()->transform());
 
-                for (int i = 0; i < 3; i++) {
-                    real k = -cam_dist / (-triag.v[i].x() + cam_dist) * scaling;
-                    x[i] = k * triag.v[i].y() + pixmap.width() / 2;
-                    y[i] = k * triag.v[i].z() + pixmap.height() / 2;
-                }
-
-                qp.drawLine(x[0], y[0], x[1], y[1]);
-                qp.drawLine(x[0], y[0], x[2], y[2]);
-                qp.drawLine(x[1], y[1], x[2], y[2]);
+            for (int i = 0; i < 3; i++) {
+                real k = -cam_dist / (-triag.v[i].x() + cam_dist) * scaling;
+                x[i] = k * triag.v[i].y() + pixmap.width() / 2;
+                y[i] = k * triag.v[i].z() + pixmap.height() / 2;
             }
+
+            qp.drawLine(x[0], y[0], x[1], y[1]);
+            qp.drawLine(x[0], y[0], x[2], y[2]);
+            qp.drawLine(x[1], y[1], x[2], y[2]);
         }
     }
 
@@ -128,7 +125,7 @@ void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
 }
 
 Color Renderer::calculate_surface_color(Vector3D source, Vector3D direction) {
-    constexpr int hits_amount = 3;
+    constexpr int hits_amount = 9;
     HitInfo hits[hits_amount];
 
     int i = 0;
@@ -157,31 +154,28 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
     real a;
 
     for (const auto& obj : _scene->objects()) {
-        if (obj.second->visible()) {
-            for (Surface* surface : obj.second->surface()) {
-                normal = surface->owner->transform().point_to_global(surface->normal);
-                if (normal * direction >= 0)
-                    continue;
+        for (Surface* surface : obj.second->surface()) {
+            normal = surface->owner->transform().point_to_global(surface->normal);
+            if (normal * direction >= 0)
+                continue;
 
-                Triangle triangle(*surface);
-                triangle.to_global(surface->owner->transform());
+            Triangle triangle(*surface);
+            triangle.to_global(surface->owner->transform());
 
-                Vector3D hit_pos;
-                real distance = triangle_intersection(start, direction, triangle, hit_pos);
-                if (distance > 0 && distance < result.distance) {
-                    result.hit = true;
-                    result.pos = hit_pos;
-                    result.surface = surface;
-                    result.distance = distance;
-                    result.normal = normal;
-                }
+            Vector3D hit_pos;
+            real distance = triangle_intersection(start, direction, triangle, hit_pos);
+            if (distance > 0 && distance < result.distance) {
+                result.hit = true;
+                result.pos = hit_pos;
+                result.surface = surface;
+                result.distance = distance;
+                result.normal = normal;
             }
         }
     }
 
-    if (result) {
+    if (result)
         result.bounce = direction - (result.normal * Vector3D::dot_product(direction, result.normal) * 2.);
-    }
 
     return result;
 }

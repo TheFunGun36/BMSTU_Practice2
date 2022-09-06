@@ -11,6 +11,11 @@ Surface::Surface(const Vector3D* v1, const Vector3D* v2, const Vector3D* v3)
     calculateNormal();
 }
 
+Surface::Surface(const Color& color, real diffuse) {
+    this->color = color;
+    this->diffuse = diffuse;
+}
+
 void Surface::calculateNormal() {
     Vector3D v1 = *points[0] - *points[1];
     Vector3D v2 = *points[0] - *points[2];

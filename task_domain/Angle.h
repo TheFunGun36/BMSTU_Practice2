@@ -36,6 +36,8 @@ public:
     Angle operator*(real value) const;
     Angle operator/(real value) const;
 
+    Angle operator-() const;
+
 protected:
     virtual std::ostream& add_to_stream(std::ostream& stream) const override;
     virtual std::wostream& add_to_stream(std::wostream& stream) const override;

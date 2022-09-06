@@ -23,9 +23,11 @@
     <ClCompile Include="Camera3D.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="CubeBordered.cpp" />
     <ClCompile Include="EulerAngles.cpp" />
     <ClCompile Include="HitInfo.cpp" />
     <ClCompile Include="Model3D.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Printable.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Real.cpp" />
@@ -44,9 +46,11 @@
     <ClInclude Include="Camera3D.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeBordered.h" />
     <ClInclude Include="EulerAngles.h" />
     <ClInclude Include="HitInfo.h" />
     <ClInclude Include="Model3D.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Printable.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Quaternion.h" />

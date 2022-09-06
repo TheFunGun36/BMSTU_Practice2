@@ -14,6 +14,7 @@ struct Surface {
 
     Surface();
     Surface(const Vector3D* v1, const Vector3D* v2, const Vector3D* v3);
+    Surface(const Color& color, real diffuse);
     void calculateNormal();
 };
 

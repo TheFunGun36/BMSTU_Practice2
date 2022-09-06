@@ -22,6 +22,7 @@ void Viewport::paintEvent(QPaintEvent* e) {
             _should_render = _auto_render;
         }
         else {
+            auto begin = std::chrono::high_resolution_clock::now();
             QImage image = QPixmap(width() / _resolution, height() / _resolution).toImage();
             if (!_renderer->render(image)) {
                 _should_render = false;
@@ -31,6 +32,8 @@ void Viewport::paintEvent(QPaintEvent* e) {
             else {
                 _pixmap = QPixmap::fromImage(image.scaledToHeight(height()));
                 _should_render = _auto_render;
+                auto delta = std::chrono::high_resolution_clock::now() - begin;
+                emit render_succeed(delta);
             }
         }
     }

@@ -43,7 +43,7 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     Vector3D border_size(3., 3., 3.);
 
     int index = ix + iy * 3 + iz * 9;
-    _cube[index] = new Cube(fill, border, size, border_size, offset);
+    _cube[index] = new CubeBordered(fill, border, size, border_size, offset);
     surface().reserve(24);
     for (auto s : _cube[index]->surface())
         surface().push_back(s);
@@ -57,7 +57,7 @@ void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles
 
     const int* it = begin;
 
-    Cube* tmp = _cube[*it];
+    CubeBordered* tmp = _cube[*it];
     it += inc;
     while (it != end) {
         _cube[*(it - inc)] = _cube[*it];
@@ -104,6 +104,8 @@ void RubicsCube::undo() {
     case 'R': rotate_r(!rev); break;
     default: return;
     }
+
+    _history.pop_back();
 }
 
 void RubicsCube::rotate(char direction, bool rev) {
@@ -167,6 +169,6 @@ void RubicsCube::reset() {
         undo();
 }
 
-const Cube& RubicsCube::cube(int index) const noexcept {
+const CubeBordered& RubicsCube::cube(int index) const noexcept {
     return *_cube[index];
 }

@@ -1,11 +1,8 @@
 #pragma once
-#include "VisibleObject.h"
+#include "Cube.h"
 
-class Room : public VisibleObject {
+class Room : public Cube {
 public:
     Room();
-
-private:
-    std::array<Vector3D, 8> _vertex;
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "VisibleObject.h"
 #include "Model3D.h"
-#include "Cube.h"
+#include "CubeBordered.h"
 #include <array>
 
 class RubicsCube : public VisibleObject {
@@ -16,7 +16,7 @@ public:
     void undo();    
     void rotate(char direction, bool rev);
     void reset();
-    const Cube& cube(int index) const noexcept;
+    const CubeBordered& cube(int index) const noexcept;
 
 private:
     void rotate_f(bool rev);
@@ -30,6 +30,6 @@ private:
 
     void apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev);
 
-    std::array<Cube*, 27> _cube;
+    std::array<CubeBordered*, 27> _cube;
     std::string _history;
 };

@@ -107,9 +107,6 @@
     <QtMoc Include="Viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scene.json" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\task_domain\task_domain.vcxproj">
       <Project>{8e6b5972-cde2-4f54-898d-10ac234fc59f}</Project>
     </ProjectReference>

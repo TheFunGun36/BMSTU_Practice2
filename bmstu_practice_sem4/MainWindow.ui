@@ -257,6 +257,9 @@
         <property name="text">
          <string>Отрисовать</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+R</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -322,14 +325,23 @@
     <property name="title">
      <string>Сцена</string>
     </property>
-    <addaction name="actionSceneLoad"/>
     <addaction name="actionRenderSimple"/>
    </widget>
    <widget class="QMenu" name="menuCamera">
     <property name="title">
      <string>Камера</string>
     </property>
+    <widget class="QMenu" name="menu">
+     <property name="title">
+      <string>Повернуть...</string>
+     </property>
+     <addaction name="actionCamL"/>
+     <addaction name="actionCamR"/>
+     <addaction name="actionCamU"/>
+     <addaction name="actionCamD"/>
+    </widget>
     <addaction name="actionCameraReset"/>
+    <addaction name="menu"/>
    </widget>
    <addaction name="menuCube"/>
    <addaction name="menuScene"/>
@@ -348,10 +360,16 @@
    <property name="text">
     <string>Отменить поворот</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
   <action name="actionCubeReset">
    <property name="text">
     <string>В исходное состояние</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="actionSceneLoad">
@@ -363,6 +381,9 @@
    <property name="text">
     <string>В исходное состояние</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
   </action>
   <action name="actionRenderSimple">
    <property name="checkable">
@@ -370,6 +391,41 @@
    </property>
    <property name="text">
     <string>Простая отрисовка</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionCamL">
+   <property name="text">
+    <string>Влево</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
+  </action>
+  <action name="actionCamR">
+   <property name="text">
+    <string>Вправо</string>
+   </property>
+   <property name="shortcut">
+    <string>D</string>
+   </property>
+  </action>
+  <action name="actionCamU">
+   <property name="text">
+    <string>Вверх</string>
+   </property>
+   <property name="shortcut">
+    <string>W</string>
+   </property>
+  </action>
+  <action name="actionCamD">
+   <property name="text">
+    <string>Вниз</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
    </property>
   </action>
  </widget>

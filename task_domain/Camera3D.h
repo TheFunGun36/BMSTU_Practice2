@@ -9,5 +9,13 @@ public:
     Camera3D();
     Camera3D(const Camera3D&) = delete;
     Camera3D(Camera3D&&) = delete;
+
+    void look_at(const Vector3D& point);
+    void rotate_horizontal(const Angle& angle);
+    void rotate_vertical(const Angle& angle);
+
+private:
+    EulerAngles _angles;
+    Vector3D _pos;
 };
 
