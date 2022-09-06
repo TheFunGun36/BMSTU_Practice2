@@ -46,7 +46,7 @@ bool Renderer::render(QImage& image) {
     int pixels_y = image.height();
 
 #ifndef _DEBUG
-    const int threads_amount = 12;
+    const int threads_amount = 7;
     std::thread threads[threads_amount];
     int chunk = pixels_y / threads_amount;
     for (int i = 0; i < threads_amount; ++i) {
