@@ -117,14 +117,14 @@ void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
             ray_point = camera->transform().point_to_global(ray_point);
             Vector3D ray_direction = ray_point - ray_start;
 
-            Color color = calculate_surface_color(ray_start, ray_direction);
+            Color color = calculate_pixel_color(ray_start, ray_direction);
 
             image.setPixelColor(j, i, qRgb(color.r, color.g, color.b));
         }
     }
 }
 
-Color Renderer::calculate_surface_color(Vector3D source, Vector3D direction) {
+Color Renderer::calculate_pixel_color(Vector3D source, Vector3D direction) {
     constexpr int hits_amount = 9;
     HitInfo hits[hits_amount];
 
