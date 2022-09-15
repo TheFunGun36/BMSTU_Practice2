@@ -322,7 +322,13 @@
 		\label{fig:throw_ray}
 	\end{figure}
 
-	
+	\subsubsection{Алгоритм поиска пересечения луча с треугольником}
+	В качестве алгоритма поиска пересечения луча с треугольником используется алгоритм Моллера-Трумбора\cite{mollertrumbor}. Схема алгоритма представлена на рис. \ref{fig:triangle_intersec}
+	\begin{figure}[!ht]
+		\center{\includegraphics[width=1\linewidth]{triangle_intersec}}
+		\caption{Схема алгоритма поиска пересечения луча с треугольником}
+		\label{fig:triangle_intersec}
+	\end{figure}
 
 	Функция bounce выполняет отражение вектора $\bar V$ относительно нормали $\bar n$ в соответствии с формулой \ref{eq:bounce}
 	\section{Зеркальный кубик Рубика}
