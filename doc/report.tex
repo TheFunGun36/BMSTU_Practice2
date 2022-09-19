@@ -1,23 +1,23 @@
-\documentclass[a4paper, 14pt]{report} %размер бумаги устанавливаем А4, шрифт 12пунктов
+\documentclass[a4paper, 14pt]{report}
 \usepackage{extsizes}
 \usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}%включаем свою кодировку: koi8-r или utf8 в UNIX, cp1251 в Windows
-\usepackage[english,russian]{babel}%используем русский и английский языки с переносами
-\usepackage{amssymb,amsfonts,amsmath,mathtext,cite,enumerate,float} %подключаем нужные пакеты расширений
-\usepackage[dvips]{graphicx} %хотим вставлять в диплом рисунки?
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext,cite,enumerate,float}
+\usepackage[dvips]{graphicx}
 \usepackage{indentfirst}
 
-\graphicspath{{./img/}}%путь к рисункам
+\graphicspath{{./img/}}
 
 \makeatletter
-\renewcommand{\@biblabel}[1]{#1.} % Заменяем библиографию с квадратных скобок на точку:
+\renewcommand{\@biblabel}[1]{#1.}
 \makeatother
 
-\usepackage{geometry} % Меняем поля страницы
-\geometry{left=2cm}% левое поле
-\geometry{right=1.5cm}% правое поле
-\geometry{top=1cm}% верхнее поле
-\geometry{bottom=2cm}% нижнее поле
+\usepackage{geometry}
+\geometry{left=2cm}
+\geometry{right=1.5cm}
+\geometry{top=1cm}
+\geometry{bottom=2cm}
 
 \usepackage[T1]{fontenc}
 \usepackage{titlesec, blindtext, color}
@@ -25,24 +25,22 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter{.}\hsp}{0pt}{\Huge\bfseries}
 
-\renewcommand{\theenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
-\renewcommand{\labelenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
-\renewcommand{\theenumii}{.\arabic{enumii}}% Меняем везде перечисления на цифра.цифра
-\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}% Меняем везде перечисления на цифра.цифра
-\renewcommand{\theenumiii}{.\arabic{enumiii}}% Меняем везде перечисления на цифра.цифра
-\renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}% Меняем везде перечисления на цифра.цифра
+\renewcommand{\theenumi}{\arabic{enumi}}
+\renewcommand{\labelenumi}{\arabic{enumi}}
+\renewcommand{\theenumii}{.\arabic{enumii}}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}
+\renewcommand{\theenumiii}{.\arabic{enumiii}}
+\renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}
 
 \usepackage{caption}
-\DeclareCaptionFormat{custom}{
-	\text{#1#2#3}
-}
 \captionsetup[figure]{name=Рисунок, labelsep=period}
 
-\usepackage{setspace} % межстрочный интервал
+\usepackage{setspace}
 \onehalfspacing
 
 \bibliographystyle{unsrt}
 \renewcommand{\labelitemi}{--}
+
 
 \begin{document}
 	\tableofcontents % это оглавление, которое генерируется автоматически
@@ -143,7 +141,7 @@
 		\item Алгоритмы построчного сканирования
 	\end{itemize}
 
-	Все вышеперечисленные алгоритмы резко теряют эффективность, если среди объектов присутствует зеркальные поверхности, особенно если речь заходит о множественных отражениях. Вследствие этого, имеет смысл использовать алгоритм трассировки лучей.
+	Все вышеперечисленные алгоритмы резко теряют эффективность, если среди объектов присутствует зеркальные поверхности, особенно если речь заходит о множественных отражениях. Вследствие этого, имеет смысл использовать алгоритм трассировки лучей \cite{computergraphics}.
 	
 	\subsection{Алгоритм прямой трассировки лучей}
 	Основная идея алгоритма - промоделировать поведение света для получения реалистичного изображения. В реальном мире, свет исходит от источника света, отражается от отражающих поверхностей и рассеивается рассеивающими поверхностями. Некоторые лучи света попадают на сетчатку глаза, которая посылает сигнал об интенсивности и цвете пришедшего луча. Алгоритм, реализующий такую модель, называется алгоритмом прямой трассировки лучей.
@@ -512,4 +510,5 @@
 	В технологическом разделе представлены все использованные программные средства с обоснованием их выбора. В частности - qt фреймворк. Показаны методы тестирования программы и описан интерфейс.
 	
 	\bibliography{./sources}
+	
 \end{document}
