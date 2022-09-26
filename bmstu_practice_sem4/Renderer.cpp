@@ -6,6 +6,7 @@
 #include <qimage.h>
 #include <thread>
 #include <stack>
+#include <atomic>
 
 struct Triangle {
     Vector3D v[3];
@@ -28,42 +29,76 @@ struct Triangle {
 
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
-    , _no_hit_color(0, 127, 200) {
-}
+    , _no_hit_color(0, 127, 200)
+    , _line_counter(0) {}
 
 struct RenderData {
     std::shared_ptr<const Camera3D> camera;
-    real width_half;
-    real height_half;
+
     real pixel_size;
+    real height_half;
+    real width_half;
+    Vector3D ray_start;
+
+    int pixels_x;
+    int pixels_y;
+
+    RenderData(
+        const std::shared_ptr<const Camera3D>& camera,
+        int pixels_x,
+        int pixels_y) {
+        this->camera = camera;
+        this->pixels_x = pixels_x;
+        this->pixels_y = pixels_y;
+
+        pixel_size = camera->height() / pixels_y;
+        height_half = camera->height() / 2.;
+        width_half = pixel_size * pixels_x / 2;
+        ray_start = camera->transform().position();
+    }
 };
 
 bool Renderer::render(QImage& image) {
     if (!_scene)
         return false;
 
-    int pixels_x = image.width();
-    int pixels_y = image.height();
+    int threads_amount = std::thread::hardware_concurrency() - 1;
+    if (threads_amount <= 0)
+        threads_amount = 4;
+    std::thread* threads = new std::thread[threads_amount];
 
-#ifndef _DEBUG
-    const int threads_amount = 7;
-    std::thread threads[threads_amount];
-    int chunk = pixels_y / threads_amount;
-    for (int i = 0; i < threads_amount; ++i) {
-        threads[i] = std::thread(
-            [this, pixels_x, &image](int yb, int ye) {
-                render_part(image, 0, pixels_x, yb, ye);
-            },
-            i * chunk, (i + 1) * chunk);
-    }
-    render_part(image, 0, pixels_x, 7 * chunk, pixels_y);
+    RenderData* rd = new RenderData(_scene->camera(), image.width(), image.height());
+
+    _line_counter.store(0);
+    for (int i = 0; i < threads_amount; ++i)
+        threads[i] = std::thread(&Renderer::render_thread, this, std::ref(image), rd);
+
     for (int i = 0; i < threads_amount; i++)
         threads[i].join();
-#else
-    render_part(image, 0, pixels_x, 0, pixels_y);
-#endif
+
+    delete[]threads;
+    delete rd;
 
     return true;
+}
+
+void Renderer::render_thread(QImage& image, const RenderData* rd) {
+    int i;
+    while ((i = _line_counter.fetch_add(1)) < rd->pixels_y) {
+        for (int j = 0; j < rd->pixels_x; ++j) {
+            Vector3D ray_point = {
+                rd->camera->distance(),
+                rd->width_half - (j + 0.5) * rd->pixel_size,
+                rd->height_half - (i + 0.5) * rd->pixel_size
+            };
+            ray_point = rd->camera->transform().point_to_global(ray_point);
+            Vector3D ray_direction = ray_point - rd->ray_start;
+
+            Color color = calculate_pixel_color(rd->ray_start, ray_direction);
+
+            image.setPixelColor(j, i, qRgb(color.r, color.g, color.b)); // TODO: remove expensive call
+        }
+    }
 }
 
 bool Renderer::render_simple(QPixmap& pixmap) {
@@ -97,31 +132,6 @@ bool Renderer::render_simple(QPixmap& pixmap) {
     }
 
     return true;
-}
-
-void Renderer::render_part(QImage& image, int xb, int xe, int yb, int ye) {
-    std::shared_ptr<const Camera3D> camera = _scene->camera();
-
-    real pixel_size = camera->height() / image.height();
-    real height_half = camera->height() / 2.;
-    real width_half = pixel_size * image.width() / 2;
-    Vector3D ray_start = camera->transform().position();
-
-    for (int i = yb; i < ye; i++) {
-        for (int j = xb; j < xe; j++) {
-            Vector3D ray_point = {
-                camera->distance(),
-                width_half - (j + 0.5) * pixel_size,
-                height_half - (i + 0.5) * pixel_size
-            };
-            ray_point = camera->transform().point_to_global(ray_point);
-            Vector3D ray_direction = ray_point - ray_start;
-
-            Color color = calculate_pixel_color(ray_start, ray_direction);
-
-            image.setPixelColor(j, i, qRgb(color.r, color.g, color.b));
-        }
-    }
 }
 
 Color Renderer::calculate_pixel_color(Vector3D source, Vector3D direction) {
