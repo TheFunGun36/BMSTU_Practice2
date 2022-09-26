@@ -75,11 +75,15 @@ Vector3D Vector3D::operator+(real value) const noexcept {
 }
 
 Vector3D Vector3D::operator-(const Vector3D& other) const noexcept {
-    return *this + -other;
+    Vector3D result(*this);
+    result -= other;
+    return result;
 }
 
 Vector3D Vector3D::operator-(real value) const noexcept {
-    return *this + -value;
+    Vector3D result(*this);
+    result -= value;
+    return result;
 }
 
 real Vector3D::operator*(const Vector3D& other) const noexcept {

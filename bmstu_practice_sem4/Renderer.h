@@ -23,10 +23,11 @@ private:
     void render_thread(QImage& image, const RenderData *rd);
     Color calculate_pixel_color(Vector3D source, Vector3D direction);
     HitInfo throw_ray(const Vector3D& start, const Vector3D& direction) const;
+
     static real triangle_intersection(
         const Vector3D& orig,
         const Vector3D& dir,
-        const Triangle& triag,
+        const Triangle* triag,
         Vector3D& intersec);
 
     std::shared_ptr<Scene> _scene;

@@ -5,22 +5,39 @@
 #include "PointLight.h"
 #include <unordered_map>
 
+struct Triangle;
+
 class Scene {
     using VisibleObjectsMap = std::unordered_map<ObjectId, std::shared_ptr<VisibleObject>>;
     using LightSourceMap = std::unordered_map<ObjectId, std::shared_ptr<PointLight>>;
-    PROPERTY_RW(VisibleObjectsMap, objects);
-    PROPERTY_RW(LightSourceMap, lights);
-    PROPERTY_RW(std::shared_ptr<Camera3D>, camera);
-    PROPERTY_RO(std::shared_ptr<RubicsCube>, cube);
+    PROPERTY_RO(bool, cache_valid);
 
 public:
     Scene();
+    ~Scene();
     Scene(const Scene&) = delete;
     Scene(Scene&&) = delete;
 
-    bool load(const std::string& filename);
+    void update_cache();
+
+    const Triangle* cache() const noexcept;
+    const Triangle* cache_end() const noexcept;
+
+    const Camera3D& camera() const noexcept;
+    const RubicsCube& cube() const noexcept;
+
+    Camera3D& camera_ref() noexcept;
+    RubicsCube& cube_ref() noexcept;
 
 private:
-    bool loadObject(const std::string& filename);
+    size_t calculate_cache_size() const noexcept;
+
+    LightSourceMap _lights;
+    std::shared_ptr<Camera3D> _camera;
+    std::shared_ptr<RubicsCube> _cube;
+    VisibleObjectsMap _objects;
+
+    Triangle* _cache;
+    Triangle* _cache_end;
 };
 

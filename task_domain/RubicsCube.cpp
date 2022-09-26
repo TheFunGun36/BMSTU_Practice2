@@ -21,8 +21,8 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     const real cube_size = 20;
 
     Surface fill;
-    fill.diffuse = 0.1;
-    fill.color = Color(0, 40, 0);
+    fill.diffuse = 0.8;
+    fill.color = Color(150, 170, 150);
 
     Surface border;
     border.diffuse = 1.0;

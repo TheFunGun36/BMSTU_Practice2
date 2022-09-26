@@ -5,7 +5,7 @@ static constexpr int plate_verticies = 24;
 CubeBordered::CubeBordered(Surface fill, Surface border, Vector3D s, Vector3D bs, Vector3D offset)
     : Cube(border, s, offset, plate_verticies) {
     constexpr int cube_verticies = 8;
-    constexpr int tolerance = 1;
+    constexpr real tolerance = 0.1;
     vertex().resize(cube_verticies + plate_verticies);
     
     fill.owner = this;

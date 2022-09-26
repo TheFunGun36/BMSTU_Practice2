@@ -8,13 +8,7 @@ MainWindow::MainWindow(QWidget* parent)
     , _renderer(std::make_shared<Renderer>(_scene)) {
     _ui.setupUi(this);
 
-    // Assign scene renderer to viewport
     _ui.displayPort->set_renderer(_renderer);
-
-    // Load scene
-    //_scene->load("Scene.json");
-
-    // connect everything lol
 
     connect(_ui.btnRender, &QPushButton::pressed, this, &MainWindow::on_manual_render);
     connect(_ui.actionCubeReset, &QAction::triggered, this, &MainWindow::on_cube_reset);
@@ -61,15 +55,15 @@ void MainWindow::update_shortcuts() {
 }
 
 void MainWindow::on_cube_reset(bool checked) {
-    _scene->cube()->reset();
-    _ui.lineHistory->setText(QString::fromStdString(_scene->cube()->history()));
+    _scene->cube_ref().reset();
+    _ui.lineHistory->setText(QString::fromStdString(_scene->cube().history()));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
 
 void MainWindow::on_cube_undo(bool checked) {
-    _scene->cube()->undo();
-    _ui.lineHistory->setText(QString::fromStdString(_scene->cube()->history()));
+    _scene->cube_ref().undo();
+    _ui.lineHistory->setText(QString::fromStdString(_scene->cube().history()));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
@@ -139,28 +133,28 @@ void MainWindow::on_rotate_d() {
 }
 
 void MainWindow::on_camera_left(bool) {
-    _scene->camera()->rotate_horizontal(-camera_rotation);
+    _scene->camera_ref().rotate_horizontal(-camera_rotation);
     _ui.statusBar->showMessage(QString("Камера повёрнута по горизонтали на ")
         + QString::fromStdString((-camera_rotation).to_string()));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
 void MainWindow::on_camera_right(bool) {
-    _scene->camera()->rotate_horizontal(camera_rotation);
+    _scene->camera_ref().rotate_horizontal(camera_rotation);
     _ui.statusBar->showMessage(QString("Камера повёрнута по горизонтали на ")
         + QString::fromStdString(camera_rotation.to_string()));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
 void MainWindow::on_camera_up(bool) {
-    _scene->camera()->rotate_vertical(camera_rotation);
+    _scene->camera_ref().rotate_vertical(camera_rotation);
     _ui.statusBar->showMessage(QString("Камера повёрнута по вертикали на ")
         + QString::fromStdString(camera_rotation.to_string()));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
 void MainWindow::on_camera_down(bool) {
-    _scene->camera()->rotate_vertical(-camera_rotation);
+    _scene->camera_ref().rotate_vertical(-camera_rotation);
     _ui.statusBar->showMessage(QString("Камера повёрнута по вертикали на ")
         + QString::fromStdString((-camera_rotation).to_string()));
     _ui.displayPort->render_update(false);
@@ -168,8 +162,8 @@ void MainWindow::on_camera_down(bool) {
 }
 
 void MainWindow::on_rotate(char direction) {
-    _scene->cube()->rotate(direction, _ui.checkRotateRev->isChecked());
-    _ui.lineHistory->setText(QString::fromStdString(_scene->cube()->history()));
+    _scene->cube_ref().rotate(direction, _ui.checkRotateRev->isChecked());
+    _ui.lineHistory->setText(QString::fromStdString(_scene->cube().history()));
 }
 
 void MainWindow::on_resolution_changed(int value) {

@@ -4,13 +4,14 @@
 #include "Surface.h"
 #include "VisibleObject.h"
 
+struct Triangle;
+
 struct HitInfo {
     bool hit;
     Vector3D pos;
     Vector3D direction;
     Vector3D bounce;
-    Vector3D normal;
-    Surface* surface;
+    const Triangle* triangle;
     real distance;
 
     operator bool() { return hit; }
