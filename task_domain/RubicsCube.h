@@ -27,6 +27,8 @@ private:
     void rotate_d(bool rev);
 
     void add_cube(int ix, int iy, int iz);
+    static Vector3D get_cube_size(int ix, int iy, int iz);
+    static Vector3D get_cube_offset(int ix, int iy, int iz);
 
     void apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev);
 

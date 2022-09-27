@@ -22,3 +22,13 @@ void Camera3D::rotate_vertical(const Angle& angle) {
     transform().set_rotation(Quaternion(_angles));
     transform().set_position(transform().rotation().rotate_point(_pos));
 }
+
+real Camera3D::zoom_in(real value) {
+    _pos.x() += value;
+    return transform().position() += transform().rotation().forward() * value;
+}
+
+real Camera3D::zoom_out(real value) {
+    _pos.x() -= value;
+    return transform().position() += transform().rotation().backward() * value;
+}

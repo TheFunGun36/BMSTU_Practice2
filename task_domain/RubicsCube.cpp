@@ -28,17 +28,8 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     border.diffuse = 1.0;
     border.color = Color(40, 40, 40);
 
-    Vector3D size(
-        (arithmeticProg(ix) + 1) * cube_size,
-        (arithmeticProg(iy) + 1) * cube_size,
-        (arithmeticProg(iz) + 1) * cube_size
-    );
-
-    Vector3D offset(
-        (arithmeticProg(ix) - 2) * cube_size,
-        (arithmeticProg(iy) - 2) * cube_size,
-        (arithmeticProg(iz) - 2) * cube_size
-    );
+    Vector3D size = get_cube_size(ix, iy, iz);
+    Vector3D offset = get_cube_offset(ix, iy, iz);
 
     Vector3D border_size(3., 3., 3.);
 
@@ -47,6 +38,22 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     surface().reserve(24);
     for (auto s : _cube[index]->surface())
         surface().push_back(s);
+}
+
+Vector3D RubicsCube::get_cube_size(int ix, int iy, int iz) {
+    return Vector3D(
+        19 + (ix - 1) * 2,
+        19 + (iy - 1) * 6,
+        19 + (iz - 1) * 10
+    );
+}
+
+Vector3D RubicsCube::get_cube_offset(int ix, int iy, int iz) {
+    return Vector3D(
+        (ix == 0) ? -26.5 : (ix == 1) ? -9.5 : 9.5,
+        (iy == 0) ? -22.5 : (iy == 1) ? -9.5 : 9.5,
+        (iz == 0) ? -18.5 : (iz == 1) ? -9.5 : 9.5
+    );
 }
 
 void RubicsCube::apply_seq(std::initializer_list<int> indexes, const EulerAngles& rot, bool rev) {

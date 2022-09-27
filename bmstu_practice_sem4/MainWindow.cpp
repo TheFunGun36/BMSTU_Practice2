@@ -10,14 +10,22 @@ MainWindow::MainWindow(QWidget* parent)
 
     _ui.displayPort->set_renderer(_renderer);
 
+    // Render button
     connect(_ui.btnRender, &QPushButton::pressed, this, &MainWindow::on_manual_render);
+
+    // Render options
+    connect(_ui.checkAutoRender, &QCheckBox::stateChanged, this, &MainWindow::on_auto_render_checked);
+    connect(_ui.spinScale, &QSpinBox::valueChanged, this, &MainWindow::on_resolution_changed);
+    connect(_ui.actionRenderSimple, &QAction::triggered, this, &MainWindow::on_render_simple_changed);
+
+    // Render result
+    connect(_ui.displayPort, &Viewport::render_failed, this, &MainWindow::on_render_failed);
+    connect(_ui.displayPort, &Viewport::render_succeed, this, &MainWindow::on_render_finish);
+
+    // Cube actions
     connect(_ui.actionCubeReset, &QAction::triggered, this, &MainWindow::on_cube_reset);
     connect(_ui.actionCubeUndo, &QAction::triggered, this, &MainWindow::on_cube_undo);
-    connect(_ui.actionCameraReset, &QAction::triggered, this, &MainWindow::on_camera_reset);
-    connect(_ui.checkAutoRender, &QCheckBox::stateChanged, this, &MainWindow::on_auto_render_checked);
-
-    connect(_ui.displayPort, &Viewport::render_failed, this, &MainWindow::on_render_failed);
-
+    connect(_ui.checkRotateRev, &QCheckBox::stateChanged, this, &MainWindow::on_rotate_reverse);
     connect(_ui.btnRotateF, &QPushButton::clicked, this, &MainWindow::on_rotate_f);
     connect(_ui.btnRotateB, &QPushButton::clicked, this, &MainWindow::on_rotate_b);
     connect(_ui.btnRotateL, &QPushButton::clicked, this, &MainWindow::on_rotate_l);
@@ -25,16 +33,14 @@ MainWindow::MainWindow(QWidget* parent)
     connect(_ui.btnRotateU, &QPushButton::clicked, this, &MainWindow::on_rotate_u);
     connect(_ui.btnRotateD, &QPushButton::clicked, this, &MainWindow::on_rotate_d);
 
-    connect(_ui.checkRotateRev, &QCheckBox::stateChanged, this, &MainWindow::on_rotate_reverse);
-    connect(_ui.spinScale, &QSpinBox::valueChanged, this, &MainWindow::on_resolution_changed);
-    connect(_ui.actionRenderSimple, &QAction::triggered, this, &MainWindow::on_render_simple_changed);
-
-    connect(_ui.displayPort, &Viewport::render_succeed, this, &MainWindow::on_render_finish);
-
+    // Camera actions
+    connect(_ui.actionCameraReset, &QAction::triggered, this, &MainWindow::on_camera_reset);
     connect(_ui.actionCamL, &QAction::triggered, this, &MainWindow::on_camera_left);
     connect(_ui.actionCamR, &QAction::triggered, this, &MainWindow::on_camera_right);
     connect(_ui.actionCamU, &QAction::triggered, this, &MainWindow::on_camera_up);
     connect(_ui.actionCamD, &QAction::triggered, this, &MainWindow::on_camera_down);
+    connect(_ui.actionZoomIn, &QAction::triggered, this, &MainWindow::on_zoom_in);
+    connect(_ui.actionZoomOut, &QAction::triggered, this, &MainWindow::on_zoom_out);
 
     update_shortcuts();
 }
@@ -98,36 +104,40 @@ void MainWindow::on_rotate_reverse(int check_state) {
 
 void MainWindow::on_rotate_f() {
     on_rotate('F');
-    _ui.displayPort->render_update(false);
-    _ui.displayPort->update();
 }
 
 void MainWindow::on_rotate_b() {
     on_rotate('B');
-    _ui.displayPort->render_update(false);
-    _ui.displayPort->update();
 }
 
 void MainWindow::on_rotate_l() {
     on_rotate('L');
-    _ui.displayPort->render_update(false);
-    _ui.displayPort->update();
 }
 
 void MainWindow::on_rotate_r() {
     on_rotate('R');
-    _ui.displayPort->render_update(false);
-    _ui.displayPort->update();
 }
 
 void MainWindow::on_rotate_u() {
     on_rotate('U');
-    _ui.displayPort->render_update(false);
-    _ui.displayPort->update();
 }
 
 void MainWindow::on_rotate_d() {
     on_rotate('D');
+}
+
+void MainWindow::on_zoom_in(bool) {
+    _scene->camera_ref().zoom_in(camera_zoom);
+    _ui.statusBar->showMessage(QString("Камера приближена на ")
+        + QString::number(camera_zoom));
+    _ui.displayPort->render_update(false);
+    _ui.displayPort->update();
+}
+
+void MainWindow::on_zoom_out(bool) {
+    _scene->camera_ref().zoom_out(camera_zoom);
+    _ui.statusBar->showMessage(QString("Камера отдалена на ")
+        + QString::number(camera_zoom));
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
@@ -164,6 +174,8 @@ void MainWindow::on_camera_down(bool) {
 void MainWindow::on_rotate(char direction) {
     _scene->cube_ref().rotate(direction, _ui.checkRotateRev->isChecked());
     _ui.lineHistory->setText(QString::fromStdString(_scene->cube().history()));
+    _ui.displayPort->render_update(false);
+    _ui.displayPort->update();
 }
 
 void MainWindow::on_resolution_changed(int value) {

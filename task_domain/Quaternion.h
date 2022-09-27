@@ -26,6 +26,12 @@ public:
     Quaternion inversed() const noexcept;
 
     Vector3D rotate_point(const Vector3D& point, bool inv = false) const;
+    Vector3D forward() const noexcept;
+    Vector3D backward() const noexcept;
+    Vector3D left() const noexcept;
+    Vector3D right() const noexcept;
+    Vector3D up() const noexcept;
+    Vector3D down() const noexcept;
 
 protected:
     virtual std::ostream& add_to_stream(std::ostream& stream) const;

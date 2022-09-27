@@ -13,6 +13,8 @@ public:
     void look_at(const Vector3D& point);
     void rotate_horizontal(const Angle& angle);
     void rotate_vertical(const Angle& angle);
+    real zoom_in(real value);
+    real zoom_out(real value);
 
 private:
     EulerAngles _angles;

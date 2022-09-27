@@ -15,6 +15,7 @@ private:
     std::shared_ptr<Scene> _scene;
     std::shared_ptr<Renderer> _renderer;
     Angle camera_rotation = Angle::from_degrees(15);
+    real camera_zoom = 25.0;
 
     void update_shortcuts();
 
@@ -32,6 +33,8 @@ private slots:
     void on_rotate_r();
     void on_rotate_u();
     void on_rotate_d();
+    void on_zoom_in(bool);
+    void on_zoom_out(bool);
     void on_rotate(char direction);
     void on_resolution_changed(int value);
     void on_render_simple_changed(int value);

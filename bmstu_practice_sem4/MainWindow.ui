@@ -342,6 +342,9 @@
     </widget>
     <addaction name="actionCameraReset"/>
     <addaction name="menu"/>
+    <addaction name="separator"/>
+    <addaction name="actionZoomIn"/>
+    <addaction name="actionZoomOut"/>
    </widget>
    <addaction name="menuCube"/>
    <addaction name="menuScene"/>
@@ -426,6 +429,22 @@
    </property>
    <property name="shortcut">
     <string>S</string>
+   </property>
+  </action>
+  <action name="actionZoomIn">
+   <property name="text">
+    <string>Приблизить</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+  </action>
+  <action name="actionZoomOut">
+   <property name="text">
+    <string>Отдалить</string>
+   </property>
+   <property name="shortcut">
+    <string>F</string>
    </property>
   </action>
  </widget>

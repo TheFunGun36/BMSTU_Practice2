@@ -78,6 +78,25 @@ Vector3D Quaternion::rotate_point(const Vector3D& point, bool inv) const {
     return Vector3D(p[1], p[2], p[3]);
 }
 
+Vector3D Quaternion::forward() const noexcept {
+    return rotate_point(Vector3D::forward());
+}
+Vector3D Quaternion::backward() const noexcept {
+    return rotate_point(Vector3D::backward());
+}
+Vector3D Quaternion::left() const noexcept {
+    return rotate_point(Vector3D::left());
+}
+Vector3D Quaternion::right() const noexcept {
+    return rotate_point(Vector3D::right());
+}
+Vector3D Quaternion::up() const noexcept {
+    return rotate_point(Vector3D::up());
+}
+Vector3D Quaternion::down() const noexcept {
+    return rotate_point(Vector3D::down());
+}
+
 std::ostream& Quaternion::add_to_stream(std::ostream& stream) const {
     return stream << "Quat(" << _q[0] << ',' << _q[1] << ',' << _q[2] << ',' << _q[3] << ')';
 }
