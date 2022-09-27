@@ -131,12 +131,16 @@ Color Renderer::calculate_pixel_color(Vector3D source, Vector3D direction) {
             break;
 
         source = hits[i].pos;
-        direction = hits[i].bounce;
+        direction -= (hits[i].triangle->normal * Vector3D::dot_product(direction, hits[i].triangle->normal) * 2.);
     }
     --i;
-    Color result = i >= 0 ? hits[i].triangle->surface->color : _no_hit_color;
-    for (; i >= 0; --i)
-        result = Color::blend(hits[i].triangle->surface->color, result, hits[i].triangle->surface->diffuse);
+    Color result = i == (hits_amount - 1) ? hits[i].triangle->surface->color : _no_hit_color;
+    for (; i >= 0; --i) {
+        real light = calculate_point_intensity(hits[i].pos, hits[i].triangle->normal);
+        Color clr = hits[i].triangle->surface->color;
+        clr = Color::intensity(clr, light);
+        result = Color::blend(clr, result, hits[i].triangle->surface->diffuse);
+    }
 
     return result;
 }
@@ -147,7 +151,7 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
     result.distance = INFINITY;
 
     for (const Triangle* ct = _scene->cache(); ct < _scene->cache_end(); ++ct) {
-        if (ct->normal * direction >= 0)
+        if (ct->normal * direction >= 1e-7)
             continue;
 
         Vector3D hit_pos;
@@ -160,9 +164,6 @@ HitInfo Renderer::throw_ray(const Vector3D& start, const Vector3D& direction) co
         }
     }
 
-    if (result)
-        result.bounce = direction - (result.triangle->normal * Vector3D::dot_product(direction, result.triangle->normal) * 2.);
-
     return result;
 }
 
@@ -173,7 +174,7 @@ real Renderer::triangle_intersection(
     Vector3D& intersec) {
 
     // Алгоритм Моллера — Трумбора
-    const real eps = 1e-14;
+    const real eps = 1e-7;
 
     // Easier naming for triangle verticies
     Vector3D e1 = triag->v[1] - triag->v[0];
@@ -187,12 +188,12 @@ real Renderer::triangle_intersection(
     real det_inv = 1.0 / det;
     Vector3D t = orig - triag->v[0];
     real u = det_inv * Vector3D::dot_product(t, p);
-    if (u < 0.0 || u > 1.0)
+    if (u < -eps || u > 1.0 + eps)
         return -1;
 
     Vector3D q = Vector3D::cross_product(t, e1);
     real v = det_inv * Vector3D::dot_product(dir, q);
-    if (v < 0.0 || u + v > 1.0)
+    if (v < -eps || u + v > 1.0 + eps)
         return -1;
 
     real t1 = det_inv * Vector3D::dot_product(e2, q);
@@ -201,4 +202,24 @@ real Renderer::triangle_intersection(
 
     intersec = orig + dir * t1;
     return t1;
+}
+
+real Renderer::calculate_point_intensity(const Vector3D& point, const Vector3D& normal) const {
+    real result = 0.;
+
+    for (const auto& light_pair : _scene->lights()) {
+        const auto& light = *light_pair.second;
+        Vector3D dir = point - light.transform().position();
+        real dst_sq = dir.length_squared();
+
+        if (dst_sq > light.radius_sq() || normal * dir >= 1e-7)
+            continue;
+
+        HitInfo hit = throw_ray(light.transform().position(), dir);
+        if (hit && hit.distance * hit.distance < dst_sq) {
+            result += light.intensity() * (light.radius_sq() - dst_sq) / light.radius_sq();
+        }
+    }
+    
+    return result;
 }

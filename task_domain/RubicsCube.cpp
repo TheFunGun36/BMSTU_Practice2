@@ -31,7 +31,7 @@ void RubicsCube::add_cube(int ix, int iy, int iz) {
     Vector3D size = get_cube_size(ix, iy, iz);
     Vector3D offset = get_cube_offset(ix, iy, iz);
 
-    Vector3D border_size(3., 3., 3.);
+    Vector3D border_size(2., 2., 2.);
 
     int index = ix + iy * 3 + iz * 9;
     _cube[index] = new CubeBordered(fill, border, size, border_size, offset);

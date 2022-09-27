@@ -25,6 +25,7 @@ public:
 
     const Camera3D& camera() const noexcept;
     const RubicsCube& cube() const noexcept;
+    const LightSourceMap& lights() const noexcept;
 
     Camera3D& camera_ref() noexcept;
     RubicsCube& cube_ref() noexcept;

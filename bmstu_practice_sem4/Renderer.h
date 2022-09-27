@@ -23,6 +23,7 @@ private:
     void render_thread(QImage& image, const RenderData *rd);
     Color calculate_pixel_color(Vector3D source, Vector3D direction);
     HitInfo throw_ray(const Vector3D& start, const Vector3D& direction) const;
+    real calculate_point_intensity(const Vector3D& point, const Vector3D& normal) const;
 
     static real triangle_intersection(
         const Vector3D& orig,

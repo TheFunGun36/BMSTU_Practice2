@@ -16,5 +16,7 @@ struct Color {
     Color& operator*=(real v);
     Color operator*(real v);
     static Color blend(Color a, Color b, real coef);
+    static Color intensity(Color color, real intencity);
+    Color& normalize_up();
 };
 

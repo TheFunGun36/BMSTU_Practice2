@@ -14,15 +14,28 @@ Scene::Scene()
     auto red_cube = std::make_shared<CubeBordered>(
         Surface({ 200, 150, 150 }, 1.0),
         Surface({ 100, 50, 50 }, 1.0),
-        Vector3D(100, 100, 100),
-        Vector3D(10, 10, 10),
-        Vector3D(150, 150, -25));
+        Vector3D(25, 25, 25),
+        Vector3D(2, 2, 2),
+        Vector3D(0, 70, 0));
 
     _objects[red_cube->id()] = red_cube;
 
     size_t cache_sz = calculate_cache_size();
     _cache = new Triangle[cache_sz];
     _cache_end = _cache + cache_sz;
+
+    // Lights
+    auto light = std::make_shared<PointLight>();
+    light->transform().set_position({ 150, 150, 100 });
+    light->set_radius_sq(200000.);
+    light->set_intensity(1.5);
+    _lights[light->id()] = light;
+
+    light = std::make_shared<PointLight>();
+    light->transform().set_position({ -150, -150, 60 });
+    light->set_radius_sq(200000.);
+    light->set_intensity(1.2);
+    _lights[light->id()] = light;
 }
 
 Scene::~Scene() {
@@ -53,6 +66,10 @@ const Triangle* Scene::cache_end() const noexcept {
 
 const RubicsCube& Scene::cube() const noexcept {
     return *_cube;
+}
+
+const Scene::LightSourceMap& Scene::lights() const noexcept {
+    return _lights;
 }
 
 RubicsCube& Scene::cube_ref() noexcept {

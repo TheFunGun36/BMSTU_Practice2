@@ -45,3 +45,15 @@ Color Color::blend(Color a, Color b, real coef) {
         a.alpha * coef + b.alpha * rev_coef
         );
 }
+
+Color Color::intensity(Color color, real intencity) {
+    return (color * real_max(intencity, 0.2)).normalize_up();
+
+}
+
+Color& Color::normalize_up() {
+    r = real_min(255, r);
+    g = real_min(255, g);
+    b = real_min(255, b);
+    return *this;
+}
