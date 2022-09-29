@@ -3,7 +3,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace unittest {
+namespace math_structs {
 
 TEST_CLASS(TestVector3D) {
 public:
@@ -11,7 +11,7 @@ public:
         Assert::AreEqual(Vector3D(4, -6, 2) * Vector3D(2, 3, 3), -4.);
         Assert::AreEqual(Vector3D(2, 3, 3) * Vector3D(4, -6, 2), -4.);
         Assert::AreEqual(Vector3D::dot_product(Vector3D(4, -6, 2), Vector3D(0, 0, 0)), 0.);
-        Assert::AreEqual(Vector3D::dot_product(Vector3D(4, -6, 2), Vector3D(0, 0, 0)), 0.);
+        Assert::AreEqual(Vector3D::dot_product(Vector3D(2, 3, 3), Vector3D(4, -6, 2)), -4.);
     }
 
     TEST_METHOD(CrossProduct) {

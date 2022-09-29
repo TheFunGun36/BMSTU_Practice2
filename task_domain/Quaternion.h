@@ -11,6 +11,7 @@ class EulerAngles;
 class Quaternion : public Printable {
 public:
     Quaternion();
+    Quaternion(real q0, real q1, real q2, real q3);
     Quaternion(const Vector3D& axis, const Angle& angle);
     Quaternion(const EulerAngles& euler_angles);
 
@@ -18,6 +19,7 @@ public:
 
     Quaternion operator*(const Quaternion& other) const noexcept;
     Quaternion& operator*=(const Quaternion& other) noexcept;
+    bool operator==(const Quaternion& other) const noexcept;
     real& operator[](int value) noexcept;
     real operator[](int value) const noexcept;
 
@@ -38,7 +40,6 @@ protected:
     virtual std::wostream& add_to_stream(std::wostream& stream) const;
 
 private:
-    Quaternion(real q0, real q1, real q2, real q3);
     std::array<real, 4> _q;
 };
 

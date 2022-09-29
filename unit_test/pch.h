@@ -9,5 +9,11 @@
 
 // add headers that you want to pre-compile here
 #include "Vector3D.h"
+#include "Angle.h"
+#include "Color.h"
+#include "Quaternion.h"
+#include "EulerAngles.h"
+#include "Real.h"
 
+constexpr real eps = 1e-8;
 #endif //PCH_H

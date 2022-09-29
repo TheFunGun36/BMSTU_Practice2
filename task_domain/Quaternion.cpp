@@ -54,12 +54,19 @@ Quaternion& Quaternion::operator*=(const Quaternion& other) noexcept {
     return *this = mul(*this, other);
 }
 
+bool Quaternion::operator==(const Quaternion& o) const noexcept {
+    return real_eq(_q[0], o._q[0])
+        && real_eq(_q[1], o._q[1])
+        && real_eq(_q[2], o._q[2])
+        && real_eq(_q[3], o._q[3]);
+}
+
 Quaternion Quaternion::mul(const Quaternion& a, const Quaternion& b) noexcept {
     Quaternion r;
-    r[0] = a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3];
-    r[1] = a[0] * b[1] + a[1] * b[0] - a[2] * b[3] + a[3] * b[2];
-    r[2] = a[0] * b[2] + a[1] * b[3] + a[2] * b[0] - a[3] * b[1];
-    r[3] = a[0] * b[3] - a[1] * b[2] + a[2] * b[1] + a[3] * b[0];
+    r[0] = a[0]*b[0] - a[1]*b[1] - a[2]*b[2] - a[3]*b[3];
+    r[1] = a[0]*b[1] + a[1]*b[0] - a[2]*b[3] + a[3]*b[2];
+    r[2] = a[0]*b[2] + a[1]*b[3] + a[2]*b[0] - a[3]*b[1];
+    r[3] = a[0]*b[3] - a[1]*b[2] + a[2]*b[1] + a[3]*b[0];
     return r;
 }
 

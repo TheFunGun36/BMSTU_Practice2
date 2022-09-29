@@ -15,38 +15,48 @@ bool Color::isValid() {
     return inRange(r) && inRange(g) && inRange(b) && inRange(alpha);
 }
 
-Color& Color::operator+=(const Color& other) {
+Color& Color::operator+=(const Color& other) noexcept {
     r += other.r;
     g += other.g;
     b += other.b;
     return *this;
 }
 
-Color Color::operator+(const Color& other) {
+Color Color::operator+(const Color& other) const noexcept {
     return Color(r + other.r, g + other.g, b + other.b);
 }
 
-Color& Color::operator*=(real v) {
+Color& Color::operator*=(real v) noexcept {
     r *= v;
     g *= v;
     b *= v;
     return *this;
 }
-Color Color::operator*(real v) {
+Color Color::operator*(real v) const noexcept{
     return Color(r * v, g * v, b * v);
 }
 
-Color Color::blend(Color a, Color b, real coef) {
+bool Color::operator==(const Color& o) const noexcept {
+    return r == o.r && g == o.g && b == o.b && alpha == o.alpha;
+}
+
+static bool equal(const Color& a, const Color& b, real tolerance = 0.) {
+    return real_eq(a.r, b.r, tolerance)
+        && real_eq(a.g, b.g, tolerance)
+        && real_eq(a.b, b.b, tolerance)
+        && real_eq(a.alpha, b.alpha, tolerance);
+}
+
+Color Color::blend(Color a, Color b, real coef) noexcept {
     const real rev_coef = 1 - coef;
     return Color(
         a.r * coef + b.r * rev_coef,
         a.g * coef + b.g * rev_coef,
         a.b * coef + b.b * rev_coef,
-        a.alpha * coef + b.alpha * rev_coef
-        );
+        a.alpha * coef + b.alpha * rev_coef);
 }
 
-Color Color::intensity(Color color, real intencity) {
+Color Color::intensity(Color color, real intencity) noexcept {
     return (color * real_max(intencity, 0.2)).normalize_up();
 
 }
