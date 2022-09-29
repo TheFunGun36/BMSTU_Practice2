@@ -10,6 +10,15 @@ MainWindow::MainWindow(QWidget* parent)
 
     _ui.displayPort->set_renderer(_renderer);
 
+    // Change window title
+    setWindowTitle("Зеркальный кубик Рубика");
+
+    // Change window icon
+    setWindowIcon(QIcon(":/MainWindow/bmstu_logo"));
+
+
+    //// CONNECT SECTION ////
+    
     // Render button
     connect(_ui.btnRender, &QPushButton::pressed, this, &MainWindow::on_manual_render);
 
@@ -43,6 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(_ui.actionZoomOut, &QAction::triggered, this, &MainWindow::on_zoom_out);
 
     update_shortcuts();
+    _ui.displayPort->render_update(true);
 }
 
 
