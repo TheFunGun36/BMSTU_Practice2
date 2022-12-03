@@ -16,6 +16,8 @@ public:
 
     Vector3D point_to_local(Vector3D point) const noexcept;
     Vector3D point_to_global(Vector3D point) const noexcept;
+    Vector3D vector_to_global(Vector3D vector) const noexcept;
+    Vector3D vector_to_local(Vector3D vector) const noexcept;
 
     void translate(const Vector3D& value);
     void rotate_world(const EulerAngles& value);

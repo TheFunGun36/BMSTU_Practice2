@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(_ui.actionZoomOut, &QAction::triggered, this, &MainWindow::on_zoom_out);
 
     update_shortcuts();
-    _ui.displayPort->render_update(true);
+    //_ui.displayPort->render_update(true);
 }
 
 

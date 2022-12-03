@@ -31,6 +31,7 @@ public:
     RubicsCube& cube_ref() noexcept;
 
 private:
+    void add_object(const std::shared_ptr<VisibleObject>& obj);
     size_t calculate_cache_size() const noexcept;
 
     LightSourceMap _lights;

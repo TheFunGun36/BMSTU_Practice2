@@ -21,3 +21,11 @@ void Surface::calculateNormal() {
     Vector3D v2 = *points[0] - *points[2];
     normal = Vector3D::cross_product(v1, v2).normalized();
 }
+
+void Surface::calculateNormal(const Vector3D& point_inside) {
+    calculateNormal();
+
+    Vector3D to_point = *points[0] - point_inside;
+    if (to_point * normal < 0)
+        normal.flip();
+}

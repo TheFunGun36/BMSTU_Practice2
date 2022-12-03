@@ -20,13 +20,13 @@ struct Triangle {
     void to_global(const Transform& t) {
         for (int i = 0; i < 3; i++)
             v[i] = t.point_to_global(v[i]);
-        normal = t.point_to_global(normal);
+        normal = t.vector_to_global(normal).normalized();
     }
 
     void to_local(const Transform& t) {
         for (int i = 0; i < 3; i++)
             v[i] = t.point_to_local(v[i]);
-        normal = t.point_to_local(normal);
+        normal = t.vector_to_local(normal).normalized();
     }
 };
 

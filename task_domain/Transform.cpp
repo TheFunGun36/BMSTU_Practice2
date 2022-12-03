@@ -19,6 +19,14 @@ Vector3D Transform::point_to_global(Vector3D point) const noexcept {
     return point;
 }
 
+Vector3D Transform::vector_to_global(Vector3D vector) const noexcept {
+    return _rotation.rotate_point(vector);
+}
+
+Vector3D Transform::vector_to_local(Vector3D vector) const noexcept {
+    return _rotation.rotate_point(vector, true);
+}
+
 void Transform::translate(const Vector3D& value) {
     _position += value;
 }
