@@ -52,7 +52,6 @@ MainWindow::MainWindow(QWidget* parent)
     connect(_ui.actionZoomOut, &QAction::triggered, this, &MainWindow::on_zoom_out);
 
     update_shortcuts();
-    //_ui.displayPort->render_update(true);
 }
 
 
@@ -197,6 +196,11 @@ void MainWindow::on_render_simple_changed(int value) {
     _ui.statusBar->showMessage("Режим отрисовки переключен в " + value ? "простой" : "полный");
 }
 
-void MainWindow::on_render_finish(std::chrono::duration<double, std::milli> delta_time) {
-    _ui.statusBar->showMessage("Отрисовка завершена, " + QString::number(delta_time.count()) + " миллисекунд затрачено");
+void MainWindow::on_render_finish(std::chrono::duration<double, std::milli> delta_time, int pixels) {
+    _ui.statusBar->showMessage(
+        "Отрисовка завершена, "
+        + QString::number(delta_time.count())
+        + " миллисекунд затрачено, "
+        + QString::number(pixels)
+        + "пикселей отрисовано.");
 }

@@ -38,7 +38,7 @@ private slots:
     void on_rotate(char direction);
     void on_resolution_changed(int value);
     void on_render_simple_changed(int value);
-    void on_render_finish(std::chrono::duration<double, std::milli> delta_time);
+    void on_render_finish(std::chrono::duration<double, std::milli> delta_time, int pixels);
 
     void on_camera_left(bool);
     void on_camera_right(bool);

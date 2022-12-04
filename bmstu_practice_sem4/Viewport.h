@@ -24,6 +24,6 @@ private:
 
 signals:
     void render_failed();
-    void render_succeed(std::chrono::duration<double, std::milli> delta_time);
+    void render_succeed(std::chrono::duration<double, std::milli> delta_time, int pixels);
 };
 
