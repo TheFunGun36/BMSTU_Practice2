@@ -43,7 +43,7 @@ struct RenderData {
 
 bool Renderer::render(QImage& image) {
     if (!_scene)
-        return false; sizeof(Vector3D);
+        return false;
 
     if (!_scene->cache_valid())
         _scene->update_cache();
@@ -70,7 +70,11 @@ bool Renderer::render(QImage& image) {
 
 void Renderer::render_thread(QImage& image, const RenderData* rd) {
     int i;
+    uint8_t* line = new uint8_t[4 * image.width()];
+
     while ((i = _line_counter.fetch_add(1)) < rd->pixels_y) {
+
+
         for (int j = 0; j < rd->pixels_x; ++j) {
             Vector3D ray_point = {
                 rd->camera_distance,
@@ -82,9 +86,17 @@ void Renderer::render_thread(QImage& image, const RenderData* rd) {
 
             Color color = calculate_pixel_color(rd->ray_start, ray_direction);
 
-            image.setPixelColor(j, i, qRgb(color.r, color.g, color.b));  // TODO: remove expensive call
+            int pixel = j << 2;
+            line[pixel++] = uint8_t(color.b);
+            line[pixel++] = uint8_t(color.g);
+            line[pixel++] = uint8_t(color.r);
+            line[pixel] = uint8_t(0xff);
         }
+
+        memcpy(image.scanLine(i), line, image.bytesPerLine());
     }
+
+    delete[]line;
 }
 
 bool Renderer::render_simple(QPixmap& pixmap) {

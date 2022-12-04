@@ -2,10 +2,10 @@
 #include "Real.h"
 
 struct Color {
+    int alpha;
     int r;
     int g;
     int b;
-    int alpha;
 
     Color();
     Color(int r, int g, int b, int alpha = 0);
