@@ -2,16 +2,21 @@
 
 Surface::Surface()
     : diffuse(1.0)
-    , points({}) {
+    , points({})
+    , ignore_light(false)
+    , owner(nullptr) {
 }
 
 Surface::Surface(const Vector3D* v1, const Vector3D* v2, const Vector3D* v3)
-    : points({ v1, v2, v3 }),
-    diffuse(1.0) {
+    : points({ v1, v2, v3 })
+    , diffuse(1.0)
+    , ignore_light(false)
+    , owner(nullptr) {
     calculateNormal();
 }
 
-Surface::Surface(const Color& color, real diffuse) {
+Surface::Surface(const Color& color, real diffuse) 
+    : Surface() {
     this->color = color;
     this->diffuse = diffuse;
 }

@@ -136,9 +136,11 @@ Color Renderer::calculate_pixel_color(Vector3D source, Vector3D direction) {
     --i;
     Color result = i == (hits_amount - 1) ? hits[i].triangle->surface->color : _no_hit_color;
     for (; i >= 0; --i) {
-        real light = calculate_point_intensity(hits[i].pos, hits[i].triangle->normal);
         Color clr = hits[i].triangle->surface->color;
-        clr = Color::intensity(clr, light);
+        if (!hits[i].triangle->surface->ignore_light) {
+            real light = calculate_point_intensity(hits[i].pos, hits[i].triangle->normal);
+            clr = Color::intensity(clr, light);
+        }
         result = Color::blend(clr, result, hits[i].triangle->surface->diffuse);
     }
 

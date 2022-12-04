@@ -2,6 +2,7 @@
 #include "Room.h"
 #include "Pyramid.h"
 #include "Triangle.h"
+#include "BmstuLogo.h"
 
 Scene::Scene()
     : _cube(std::make_shared<RubicsCube>())
@@ -10,12 +11,18 @@ Scene::Scene()
     _objects[_cube->id()] = _cube;
 
     add_object(std::make_shared<Room>());
-    add_object(std::make_shared<CubeBordered>(
+    auto redcube = std::make_shared<CubeBordered>(
         Surface({ 200, 150, 150 }, 1.0),
         Surface({ 100, 50, 50 }, 1.0),
         Vector3D(25, 25, 25),
         Vector3D(2, 2, 2),
-        Vector3D(0, 70, 0)));
+        Vector3D(0, 70, 0));
+    redcube->transform().rotate_world(EulerAngles(
+        Angle::from_degrees(45),
+        Angle::from_degrees(45),
+        Angle::from_degrees(45)
+    ));
+    add_object(redcube);
     add_object(std::make_shared<CubeBordered>(
         Surface({ 100, 200, 150 }, 0.8),
         Surface({ 50, 100, 100 }, 1.0),
@@ -26,6 +33,7 @@ Scene::Scene()
         Surface({ 150, 200, 200 }, 0.4),
         Vector3D(-40, -90, 0),
         50));
+    add_object(std::make_shared<BmstuLogo>());
     auto pyramid = std::make_shared<Pyramid>(
         Surface({ 150, 100, 220 }, 0.6),
         Vector3D(0, 0, 0),
@@ -34,8 +42,13 @@ Scene::Scene()
             Angle::from_degrees(24),
             Angle::from_degrees(51),
             Angle::from_degrees(61)));
-    pyramid->transform().set_position(Vector3D(100, 100, -20));
+    pyramid->transform().set_position(Vector3D(100, -20, -20));
     add_object(pyramid);
+
+    Surface bright({ 255, 255, 255 }, 1.0);
+    bright.ignore_light = true;
+    add_object(std::make_shared<Pyramid>(bright, Vector3D(150, 150, 100), 10));
+    add_object(std::make_shared<Pyramid>(bright, Vector3D(-150, -150, 60), 10));
 
     size_t cache_sz = calculate_cache_size();
     _cache = new Triangle[cache_sz];
@@ -44,14 +57,14 @@ Scene::Scene()
     // Lights
     auto light = std::make_shared<PointLight>();
     light->transform().set_position({ 150, 150, 100 });
-    light->set_radius_sq(200000.);
-    light->set_intensity(1.5);
+    light->set_radius_sq(300000.);
+    light->set_intensity(1.3);
     _lights[light->id()] = light;
 
     light = std::make_shared<PointLight>();
     light->transform().set_position({ -150, -150, 60 });
-    light->set_radius_sq(200000.);
-    light->set_intensity(1.2);
+    light->set_radius_sq(300000.);
+    light->set_intensity(1.3);
     _lights[light->id()] = light;
 }
 

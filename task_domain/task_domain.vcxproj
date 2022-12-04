@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angle.cpp" />
+    <ClCompile Include="BmstuLogo.cpp" />
     <ClCompile Include="Camera3D.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.h" />
+    <ClInclude Include="BmstuLogo.h" />
     <ClInclude Include="Camera3D.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Cube.h" />

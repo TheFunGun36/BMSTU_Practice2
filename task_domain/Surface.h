@@ -10,6 +10,7 @@ struct Surface {
     Vector3D normal;
     real diffuse;
     Color color;
+    bool ignore_light;
     std::array<const Vector3D*, 3> points;
 
     Surface();

@@ -79,6 +79,9 @@
     <ClCompile Include="Pyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BmstuLogo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.h">
@@ -151,5 +154,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Pyramid.h" />
+    <ClInclude Include="BmstuLogo.h" />
   </ItemGroup>
 </Project>
