@@ -1,13 +1,14 @@
 ﻿#include "MainWindow.h"
 #include "Scene.h"
 #include <qmessagebox>
+#include <qprogressbar>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , _scene(std::make_shared<Scene>())
     , _renderer(std::make_shared<Renderer>(_scene)) {
     _ui.setupUi(this);
-
+    _renderer->set_progress_bar(_ui.progressBar);
     _ui.displayPort->set_renderer(_renderer);
 
     // Change window title

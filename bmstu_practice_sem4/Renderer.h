@@ -7,6 +7,7 @@ class QPainter;
 class QPixmap;
 class QImage;
 class Camera3D;
+class QProgressBar;
 struct Triangle;
 struct RenderData;
 
@@ -18,6 +19,7 @@ public:
 
     bool render(QImage& image);
     bool render_simple(QPixmap& pixmap);
+    void set_progress_bar(QProgressBar* progress_bar);
 
 private:
     void render_thread(QImage& image, const RenderData *rd);
@@ -33,5 +35,7 @@ private:
 
     std::shared_ptr<Scene> _scene;
     std::atomic_int _line_counter;
+    std::atomic_int _lines_done;
+    QProgressBar* _progress_bar;
 };
 

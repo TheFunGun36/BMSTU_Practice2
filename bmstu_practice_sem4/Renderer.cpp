@@ -8,11 +8,13 @@
 #include <thread>
 #include <stack>
 #include <atomic>
+#include <qprogressbar>
 
 Renderer::Renderer(const std::shared_ptr<Scene>& scene)
     : _scene(scene)
     , _no_hit_color(0, 127, 200)
-    , _line_counter(0) {}
+    , _line_counter(0)
+    , _progress_bar(nullptr) { }
 
 struct RenderData {
     const Transform& camtransform;
@@ -54,10 +56,25 @@ bool Renderer::render(QImage& image) {
     std::thread* threads = new std::thread[threads_amount];
 
     RenderData* rd = new RenderData(_scene->camera(), image.width(), image.height());
+    
+    if (_progress_bar) {
+        _progress_bar->setValue(0);
+        _progress_bar->setMaximum(image.height());
+    }
 
     _line_counter.store(0);
+    _lines_done.store(0);
     for (int i = 0; i < threads_amount; ++i)
         threads[i] = std::thread(&Renderer::render_thread, this, std::ref(image), rd);
+
+    if (_progress_bar) {
+        using namespace std::chrono_literals;
+        while (_lines_done < image.height()) {
+            _progress_bar->setValue(_lines_done);
+            std::this_thread::sleep_for(10ms);
+        }
+        _progress_bar->setValue(_lines_done);
+    }
 
     for (int i = 0; i < threads_amount; i++)
         threads[i].join();
@@ -73,8 +90,6 @@ void Renderer::render_thread(QImage& image, const RenderData* rd) {
     uint8_t* line = new uint8_t[4 * image.width()];
 
     while ((i = _line_counter.fetch_add(1)) < rd->pixels_y) {
-
-
         for (int j = 0; j < rd->pixels_x; ++j) {
             Vector3D ray_point = {
                 rd->camera_distance,
@@ -94,6 +109,8 @@ void Renderer::render_thread(QImage& image, const RenderData* rd) {
         }
 
         memcpy(image.scanLine(i), line, image.bytesPerLine());
+
+        ++_lines_done;
     }
 
     delete[]line;
@@ -105,7 +122,7 @@ bool Renderer::render_simple(QPixmap& pixmap) {
 
     int x[3];
     int y[3];
-    real cam_dist = _scene->camera().distance() + _scene->camera().transform().position().x() * 0.5;
+    real cam_dist = _scene->camera().distance();
     real scaling = pixmap.height() / _scene->camera().height();
     QPainter qp(&pixmap);
     qp.fillRect(pixmap.rect(), Qt::white);
@@ -118,18 +135,27 @@ bool Renderer::render_simple(QPixmap& pixmap) {
         Triangle t = *ct;
         t.to_local(_scene->camera().transform());
 
-        for (int i = 0; i < 3; i++) {
-            real k = -cam_dist / (-t.v[i].x() + cam_dist) * scaling;
+        bool bad = false;
+        for (int i = 0; !bad && i < 3; i++) {
+            real k = cam_dist / (-t.v[i].x() + cam_dist) * scaling;
             x[i] = k * t.v[i].y() + pixmap.width() / 2;
             y[i] = k * t.v[i].z() + pixmap.height() / 2;
+
+            bad = k > 1;
         }
 
-        qp.drawLine(x[0], y[0], x[1], y[1]);
-        qp.drawLine(x[0], y[0], x[2], y[2]);
-        qp.drawLine(x[1], y[1], x[2], y[2]);
+        if (!bad) {
+            qp.drawLine(x[0], y[0], x[1], y[1]);
+            qp.drawLine(x[0], y[0], x[2], y[2]);
+            qp.drawLine(x[1], y[1], x[2], y[2]);
+        }
     }
 
     return true;
+}
+
+void Renderer::set_progress_bar(QProgressBar* progress_bar) {
+    _progress_bar = progress_bar;
 }
 
 Color Renderer::calculate_pixel_color(Vector3D source, Vector3D direction) {
@@ -234,6 +260,6 @@ real Renderer::calculate_point_intensity(const Vector3D& point, const Vector3D& 
             result += light.intensity() * (light.radius_sq() - dst_sq) / light.radius_sq();
         }
     }
-    
+
     return result;
 }

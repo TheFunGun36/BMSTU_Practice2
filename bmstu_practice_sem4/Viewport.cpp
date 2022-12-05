@@ -4,16 +4,21 @@
 
 Viewport::Viewport(QWidget* parent)
     : QWidget(parent)
-    , _pixmap(width(), height())
     , _should_render(false)
     , _auto_render(false)
     , _render_simple(false)
     , _resolution(1) {
+
+    _pixmap = QPixmap(2000, 2000);
+    _pixmap.fill(Qt::white);
 }
 
 void Viewport::paintEvent(QPaintEvent* e) {
     Q_UNUSED(e);
-    QPainter qp(this);
+    {
+        QPainter qp(this);
+        qp.drawPixmap(0, 0, _pixmap);
+    }
 
     if (_should_render) {
         if (_render_simple) {
@@ -37,7 +42,11 @@ void Viewport::paintEvent(QPaintEvent* e) {
             }
         }
     }
-    qp.drawPixmap(0, 0, _pixmap);
+
+    {
+        QPainter qp(this);
+        qp.drawPixmap(0, 0, _pixmap);
+    }
 }
 
 void Viewport::render_update(bool force) {
