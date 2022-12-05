@@ -50,14 +50,14 @@
 		\fontsize{12pt}{0.7\baselineskip}\selectfont
 		\centering
 		\begin{signstabular}[0.7]{p{7.25cm} >{\centering\arraybackslash}p{4cm} >{\centering\arraybackslash}p{4cm}}
-			Научный руководитель & \uline{\mbox{\hspace*{4cm}}} & \uline{\hfill \textbf{Мальцева Д.Ю.} \hfill} \\
+			Студент группы \textbf{ИУ7-56Б} & \uline{\mbox{\hspace*{4cm}}} & \uline{\hfill \textbf{Чепрасов К.М.} \hfill} \\
 			& \scriptsize (Подпись, дата) & \scriptsize (И.О. Фамилия)
 		\end{signstabular}
 		
 		\vspace{\baselineskip}
 		
 		\begin{signstabular}[0.7]{p{7.25cm} >{\centering\arraybackslash}p{4cm} >{\centering\arraybackslash}p{4cm}}
-			Студент группы \textbf{ИУ7-56Б} & \uline{\mbox{\hspace*{4cm}}} & \uline{\hfill \textbf{Чепрасов К.М.} \hfill} \\
+			Научный руководитель & \uline{\mbox{\hspace*{4cm}}} & \uline{\hfill \textbf{Мальцева Д.Ю.} \hfill} \\
 			& \scriptsize (Подпись, дата) & \scriptsize (И.О. Фамилия)
 		\end{signstabular}
 	\end{table}
@@ -65,12 +65,13 @@
 	\vfill
 	
 	\begin{center}
-		\normalsize \textit{\textbf{2022} г.}
+		\normalsize \textbf{2022} г.
 	\end{center}
 \end{titlepage}
-\setcounter{page}{2}
+\setcounter{page}{3}
 \tableofcontents
 \section*{Введение}
+\addcontentsline{toc}{section}{Введение}
 Кубик Рубика является очень простой головоломкой с точки зрения своего устройства. Но стоящая за ней математика проделала довольно долгий путь. Существуют нерешённые задачи, связанные с этой головоломкой.
 
 Сам по себе кубик Рубика, может выглядеть очень по-разному. В рамках данного курсового проекта будет рассмотрена одна из вариаций данной головоломки, а именно --- зеркальный кубик Рубика.
@@ -79,10 +80,10 @@
 \begin{itemize}
 	\item разработка способа формального представления кубика Рубика;
 	\item анализ существующих алгоритмов удаления невидимых граней;
-	\item реализация описанного алгоритма
-	\item проектирование архитектуры программы
-	\item разработка интерфейса программы
-	\item разработка спроектированного ПО
+	\item реализация описанного алгоритма;
+	\item проектирование архитектуры программы;
+	\item разработка интерфейса программы;
+	\item разработка спроектированного ПО.
 \end{itemize}
 
 \include{analyt}
@@ -91,23 +92,27 @@
 \include{experiment}
 
 \section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
 Цель достигнута. В рамках данной курсовой работы были проанализированы существующие алгоритмы отрисовки сцены, среди которых был выбран алгоритм обратной трассировки лучей, из-за возможности отрисовки зеркальных поверхностей.
 
 Была составлена архитектура программы:
 \begin{itemize}
-	\item представлена сокращённая UML-диаграмма классов сцены (рисунок \ref{fig:uml_scene}),
-	\item выделены основные используемые программой структуры данных,
+	\item представлена сокращённая UML-диаграмма классов сцены (рисунок \ref{fig:uml_scene});
+	\item выделены основные используемые программой структуры данных;
 	\item формализованы алгоритмы, необходимые для отрисовки сцены.
 \end{itemize}
 
 Была реализована программа:
 \begin{itemize}
-	\item был определён набор инструментов для её реализации,
-	\item представлен внешний вид интерфейса (рисунок \ref{fig:interface}),
+	\item был определён набор инструментов для её реализации;
+	\item представлен внешний вид интерфейса (рисунок \ref{fig:interface});
 	\item составлены тесты для функций, использующих математические структуры данных.
 \end{itemize}
 
 \bibliographystyle{utf8gost705u}
 \bibliography{sources}
+
+\addcontentsline{toc}{section}{Приложение А}
+\section*{Приложение А}
 
 \end{document}
