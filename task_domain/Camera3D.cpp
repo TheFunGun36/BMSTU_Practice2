@@ -32,3 +32,12 @@ real Camera3D::zoom_out(real value) {
     _pos.x() -= value;
     return transform().position() += transform().rotation().backward() * value;
 }
+
+void Camera3D::reset() {
+    _angles.set_z(Angle::from_radians(0));
+    _angles.set_y(Angle::from_radians(0));
+    transform().set_rotation(Quaternion(_angles));
+
+    _pos.set_x(-300);
+    transform().set_position(_pos);
+}

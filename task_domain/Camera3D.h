@@ -15,6 +15,7 @@ public:
     void rotate_vertical(const Angle& angle);
     real zoom_in(real value);
     real zoom_out(real value);
+    void reset();
 
 private:
     EulerAngles _angles;

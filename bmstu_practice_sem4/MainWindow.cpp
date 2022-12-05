@@ -85,7 +85,7 @@ void MainWindow::on_cube_undo(bool checked) {
 }
 
 void MainWindow::on_camera_reset(bool checked) {
-    QMessageBox::critical(this, "NOT IMPLEMENTED", "NOT IMPLEMENTED");
+    _scene->camera_ref().reset();
     _ui.displayPort->render_update(false);
     _ui.displayPort->update();
 }
@@ -194,7 +194,7 @@ void MainWindow::on_resolution_changed(int value) {
 
 void MainWindow::on_render_simple_changed(int value) {
     _ui.displayPort->set_render_simple(value);
-    _ui.statusBar->showMessage("Режим отрисовки переключен в " + value ? "простой" : "полный");
+    _ui.statusBar->showMessage(QString("Режим отрисовки переключен в ") + (value ? QString("простой") : QString("полный")));
 }
 
 void MainWindow::on_render_finish(std::chrono::duration<double, std::milli> delta_time, int pixels) {

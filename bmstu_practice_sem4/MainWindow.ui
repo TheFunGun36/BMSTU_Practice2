@@ -480,6 +480,19 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnRotateU</tabstop>
+  <tabstop>btnRotateL</tabstop>
+  <tabstop>btnRotateF</tabstop>
+  <tabstop>btnRotateR</tabstop>
+  <tabstop>btnRotateD</tabstop>
+  <tabstop>btnRotateB</tabstop>
+  <tabstop>checkRotateRev</tabstop>
+  <tabstop>lineHistory</tabstop>
+  <tabstop>spinScale</tabstop>
+  <tabstop>checkAutoRender</tabstop>
+  <tabstop>btnRender</tabstop>
+ </tabstops>
  <resources>
   <include location="MainWindow.qrc"/>
  </resources>
